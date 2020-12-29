@@ -1,6 +1,10 @@
 import 'package:flutter/widgets.dart';
-import 'package:loliot/app.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+import './app.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(App());
 }
