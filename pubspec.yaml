@@ -12,9 +12,13 @@ dependencies:
   flutter:
     sdk: flutter
 
+  equatable: ^1.2.5
+  firebase_auth: ^0.18.4+1
   firebase_core: ^0.5.3
   flutter_bloc: ^6.1.1
-  equatable: ^1.2.5
+  github_sign_in: ^0.0.3
+  google_sign_in: ^4.5.6
+  meta: ^1.2.4
 
 dev_dependencies:
   flutter_test:
