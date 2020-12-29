@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "347790048933",
+    "firebase_url": "https://loliot-a960c.firebaseio.com",
+    "project_id": "loliot-a960c",
+    "storage_bucket": "loliot-a960c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:347790048933:android:1c2bed328d3b935ce9d74c",
+        "android_client_info": {
+          "package_name": "com.hands.loliot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "347790048933-rq305j1oat4gjgcp58l8nonqp722a8sf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1dFgJml1aRXEU7ymb7VpkXmh7L-38uH4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "347790048933-rq305j1oat4gjgcp58l8nonqp722a8sf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "347790048933-drakig4rbcqcn8jq02n7u7b2uq5gbrer.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hands.loliot"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
