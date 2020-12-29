@@ -126,7 +126,8 @@ class _SignInWithGitHubButton extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0)),
       icon: const Icon(FontAwesomeIcons.githubAlt, color: Colors.white),
       color: theme.accentColor,
-      onPressed: () => context.read<SignInCubit>().signInWithGoogle(),
+      onPressed: () =>
+          context.read<SignInCubit>().signInWithGitHub(context: context),
     );
   }
 }
