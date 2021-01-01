@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../sign_up.dart';
-import '../../authentication/authentication.dart';
+import '../../../authentication/authentication.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({Key key}) : super(key: key);

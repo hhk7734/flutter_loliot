@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 
-import '../../authentication/authentication.dart';
+import '../../../authentication/authentication.dart';
 
 part 'sign_up_state.dart';
 
