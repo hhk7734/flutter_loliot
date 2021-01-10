@@ -7,6 +7,7 @@ class ReactGridView extends StatelessWidget {
   ReactGridView({
     Key key,
     List<ReactPositioned> children,
+    double clickableWidth = 30,
     @required int crossAxisCount,
     double crossAxisSpacing = 10,
     double gridAspectRatio = 3 / 4,
@@ -15,6 +16,7 @@ class ReactGridView extends StatelessWidget {
   }) : super(key: key) {
     _cubit.children = children ?? <ReactPositioned>[];
     _cubit.reactGridViewModel = ReactGridViewModel(
+      clickableWidth: clickableWidth,
       crossAxisCount: crossAxisCount,
       crossAxisSpacing: crossAxisSpacing,
       gridAspectRatio: gridAspectRatio,

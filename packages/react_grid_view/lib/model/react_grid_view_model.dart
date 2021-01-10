@@ -7,17 +7,25 @@ part 'react_grid_view_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class ReactGridViewModel extends Equatable {
   const ReactGridViewModel({
+    this.clickableWidth = 30,
     @required this.crossAxisCount,
     this.crossAxisSpacing = 10,
     this.gridAspectRatio = 3 / 4,
     @required this.mainAxisCount,
     this.mainAxisSpacing = 10,
-    this.width = 0,
-  })  : assert(crossAxisCount != null && crossAxisSpacing != null,
-            gridAspectRatio != null && mainAxisCount != null),
+    this.width = 1,
+  })  : assert(clickableWidth > 0 &&
+            crossAxisCount > 1 &&
+            crossAxisSpacing >= 0 &&
+            gridAspectRatio > 0 &&
+            mainAxisCount > 1 &&
+            mainAxisSpacing >= 0 &&
+            width > 0),
         crossAxisStride = width / crossAxisCount,
         height = mainAxisCount * width / crossAxisCount / gridAspectRatio,
         mainAxisStride = width / crossAxisCount / gridAspectRatio;
+
+  final double clickableWidth;
 
   final int crossAxisCount;
   final double crossAxisSpacing;
