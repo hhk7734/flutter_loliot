@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 
+import '../react_grid_view.dart';
+
 part 'react_grid_view_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
@@ -44,6 +46,14 @@ class ReactGridViewModel extends Equatable {
 
   @JsonKey(ignore: true)
   final double width;
+
+  bool checkOverflow(ReactPositionedModel childModel) {
+    if (childModel.crossAxisOffsetCount + childModel.crossAxisCount >
+        crossAxisCount) return true;
+    if (childModel.mainAxisOffsetCount + childModel.mainAxisCount >
+        mainAxisCount) return true;
+    return false;
+  }
 
   // Equatable
 

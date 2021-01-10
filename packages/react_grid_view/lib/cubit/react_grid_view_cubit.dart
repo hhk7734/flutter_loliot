@@ -28,6 +28,7 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
 
       assert(!_childrenModel.entries
           .any((e) => e.value.checkOverlap(reactPositionedModel)));
+      assert(!_model.checkOverflow(reactPositionedModel));
       _childrenModel.putIfAbsent(index, () => reactPositionedModel);
     });
   }
