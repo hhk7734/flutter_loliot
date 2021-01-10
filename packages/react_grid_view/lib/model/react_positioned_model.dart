@@ -44,6 +44,30 @@ class ReactPositionedModel extends Equatable {
 
   final bool verticalResizable;
 
+  bool checkOverlap(ReactPositionedModel model) {
+    int innerTop = mainAxisOffsetCount > model.mainAxisOffsetCount
+        ? mainAxisOffsetCount
+        : model.mainAxisOffsetCount;
+    int innerBottom = mainAxisOffsetCount + mainAxisCount <
+            model.mainAxisOffsetCount + model.mainAxisCount
+        ? mainAxisOffsetCount + mainAxisCount
+        : model.mainAxisOffsetCount + model.mainAxisCount;
+
+    if (innerTop >= innerBottom) return false;
+
+    int innerLeft = crossAxisOffsetCount > model.crossAxisOffsetCount
+        ? crossAxisOffsetCount
+        : model.crossAxisOffsetCount;
+    int innerRight = crossAxisOffsetCount + crossAxisCount <
+            model.crossAxisOffsetCount + model.crossAxisCount
+        ? crossAxisOffsetCount + crossAxisCount
+        : model.crossAxisOffsetCount + model.crossAxisCount;
+
+    if (innerLeft >= innerRight) return false;
+
+    return true;
+  }
+
   // Equatable
 
   ReactPositionedModel copyWith({
@@ -94,28 +118,4 @@ class ReactPositionedModel extends Equatable {
       _$ReactPositionedModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ReactPositionedModelToJson(this);
-
-  bool checkOverlap(ReactPositionedModel model) {
-    int innerTop = mainAxisOffsetCount > model.mainAxisOffsetCount
-        ? mainAxisOffsetCount
-        : model.mainAxisOffsetCount;
-    int innerBottom = mainAxisOffsetCount + mainAxisCount <
-            model.mainAxisOffsetCount + model.mainAxisCount
-        ? mainAxisOffsetCount + mainAxisCount
-        : model.mainAxisOffsetCount + model.mainAxisCount;
-
-    if (innerTop >= innerBottom) return false;
-
-    int innerLeft = crossAxisOffsetCount > model.crossAxisOffsetCount
-        ? crossAxisOffsetCount
-        : model.crossAxisOffsetCount;
-    int innerRight = crossAxisOffsetCount + crossAxisCount <
-            model.crossAxisOffsetCount + model.crossAxisCount
-        ? crossAxisOffsetCount + crossAxisCount
-        : model.crossAxisOffsetCount + model.crossAxisCount;
-
-    if (innerLeft >= innerRight) return false;
-
-    return true;
-  }
 }

@@ -18,3 +18,13 @@ class ReactGridViewUpdateState extends ReactGridViewState {
   @override
   List<Object> get props => [children.length, model];
 }
+
+class ReactPositionedUpdateState extends ReactGridViewState {
+  const ReactPositionedUpdateState(this.childrenModel, this.model);
+
+  final Map<int, ReactPositionedModel> childrenModel;
+  final ReactGridViewModel model;
+
+  @override
+  List<Object> get props => [childrenModel, model];
+}
