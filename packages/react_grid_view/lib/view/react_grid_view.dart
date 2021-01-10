@@ -13,19 +13,19 @@ class ReactGridView extends StatelessWidget {
     double gridAspectRatio = 3 / 4,
     @required int mainAxisCount,
     double mainAxisSpacing = 10,
-  }) : super(key: key) {
-    _cubit.children = children ?? <ReactPositioned>[];
-    _cubit.reactGridViewModel = ReactGridViewModel(
-      clickableWidth: clickableWidth,
-      crossAxisCount: crossAxisCount,
-      crossAxisSpacing: crossAxisSpacing,
-      gridAspectRatio: gridAspectRatio,
-      mainAxisCount: mainAxisCount,
-      mainAxisSpacing: mainAxisSpacing,
-    );
-  }
+  })  : _cubit = ReactGridViewCubit(
+            children ?? <ReactPositioned>[],
+            ReactGridViewModel(
+              clickableWidth: clickableWidth,
+              crossAxisCount: crossAxisCount,
+              crossAxisSpacing: crossAxisSpacing,
+              gridAspectRatio: gridAspectRatio,
+              mainAxisCount: mainAxisCount,
+              mainAxisSpacing: mainAxisSpacing,
+            )),
+        super(key: key);
 
-  final ReactGridViewCubit _cubit = ReactGridViewCubit();
+  final ReactGridViewCubit _cubit;
 
   @override
   Widget build(BuildContext context) {
