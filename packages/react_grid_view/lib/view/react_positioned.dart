@@ -3,48 +3,70 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../react_grid_view.dart';
 
-class ReactPositioned extends StatefulWidget {
+class ReactPositioned {
   ReactPositioned({
     Key key,
     this.child,
-    this.crossAxisCount = 1,
-    this.crossAxisOffsetCount = 0,
-    this.horizontalResizable = true,
-    this.mainAxisCount = 1,
-    this.mainAxisOffsetCount = 0,
-    this.maxCrossAxisCount = 1,
-    this.maxMainAxisCount = 1,
-    this.minCrossAxisCount = 1,
-    this.minMainAxisCount = 1,
-    this.movable = true,
-    this.verticalResizable = true,
-  }) : super(key: key ?? UniqueKey());
+    int crossAxisCount = 1,
+    int crossAxisOffsetCount = 0,
+    bool horizontalResizable = true,
+    int mainAxisCount = 1,
+    int mainAxisOffsetCount = 0,
+    int maxCrossAxisCount = 1,
+    int maxMainAxisCount = 1,
+    int minCrossAxisCount = 1,
+    int minMainAxisCount = 1,
+    bool movable = true,
+    bool verticalResizable = true,
+  })  : this.key = key ?? UniqueKey(),
+        model = ReactPositionedModel(
+          crossAxisCount: crossAxisCount,
+          crossAxisOffsetCount: crossAxisOffsetCount,
+          horizontalResizable: horizontalResizable,
+          mainAxisCount: mainAxisCount,
+          mainAxisOffsetCount: mainAxisOffsetCount,
+          maxCrossAxisCount: maxCrossAxisCount,
+          maxMainAxisCount: maxMainAxisCount,
+          minCrossAxisCount: minCrossAxisCount,
+          minMainAxisCount: minMainAxisCount,
+          movable: movable,
+          verticalResizable: verticalResizable,
+        );
 
   final Widget child;
 
-  final int crossAxisCount;
-  final int crossAxisOffsetCount;
+  int index;
 
-  final bool horizontalResizable;
+  final Key key;
 
-  final int mainAxisCount;
-  final int mainAxisOffsetCount;
+  ReactPositionedModel model;
 
-  final int maxCrossAxisCount;
-  final int maxMainAxisCount;
+  _ReactPositioned toWidget() => _ReactPositioned(
+        key: key,
+        child: child,
+        index: index,
+        model: model,
+      );
+}
 
-  final int minCrossAxisCount;
-  final int minMainAxisCount;
+class _ReactPositioned extends StatefulWidget {
+  _ReactPositioned({
+    Key key,
+    this.child,
+    this.index,
+    this.model,
+  }) : super(key: key);
+  final Widget child;
 
-  final bool movable;
+  final int index;
 
-  final bool verticalResizable;
+  final ReactPositionedModel model;
 
   @override
   _ReactPositionedState createState() => _ReactPositionedState();
 }
 
-class _ReactPositionedState extends State<ReactPositioned> {
+class _ReactPositionedState extends State<_ReactPositioned> {
   ReactGridViewCubit _cubit;
 
   double get crossAxisOverflow => reactGridViewModel.crossAxisSpacing >
@@ -57,8 +79,6 @@ class _ReactPositionedState extends State<ReactPositioned> {
       mainAxisOverflow;
 
   double get heightWithoutMargin => height - margin.vertical;
-
-  int index;
 
   double get left =>
       model.crossAxisOffsetCount * reactGridViewModel.crossAxisStride -
@@ -94,7 +114,6 @@ class _ReactPositionedState extends State<ReactPositioned> {
   void initState() {
     super.initState();
     _cubit = context.read<ReactGridViewCubit>();
-    index = _cubit.findChildIndex(widget);
   }
 
   @override
@@ -103,16 +122,16 @@ class _ReactPositionedState extends State<ReactPositioned> {
       cubit: _cubit,
       buildWhen: (previous, current) {
         if (current is ReactPositionedUpdateState) {
-          if (current.childrenModel.containsKey(index)) return true;
+          if (current.childrenModel.containsKey(widget.index)) return true;
         }
         return false;
       },
       builder: (context, state) {
         if (state is ReactGridViewUpdateState) {
-          model = _cubit.childrenModel[index];
+          model = widget.model;
           reactGridViewModel = state.model;
         } else if (state is ReactPositionedUpdateState) {
-          model = state.childrenModel[index];
+          model = state.childrenModel[widget.index];
           reactGridViewModel = state.model;
         }
 

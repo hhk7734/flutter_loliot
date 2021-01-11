@@ -12,7 +12,7 @@ class ReactGridViewInitial extends ReactGridViewState {
 class ReactGridViewUpdateState extends ReactGridViewState {
   const ReactGridViewUpdateState(this.children, this.model);
 
-  final List<ReactPositioned> children;
+  final List<Widget> children;
   final ReactGridViewModel model;
 
   @override
