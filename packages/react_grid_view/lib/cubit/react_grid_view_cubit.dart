@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/widgets.dart';
 
 import '../react_grid_view.dart';
 
@@ -7,61 +8,39 @@ part 'react_grid_view_state.dart';
 
 class ReactGridViewCubit extends Cubit<ReactGridViewState> {
   ReactGridViewCubit(List<ReactPositioned> children, ReactGridViewModel model)
-      : _children = children.asMap(),
-        _model = model,
+      : _model = model,
         super(ReactGridViewInitial()) {
-    _childrenModel = <int, ReactPositionedModel>{};
-    _children.forEach((int index, ReactPositioned child) {
-      ReactPositionedModel reactPositionedModel = ReactPositionedModel(
-        crossAxisCount: child.crossAxisCount,
-        crossAxisOffsetCount: child.crossAxisOffsetCount,
-        horizontalResizable: child.horizontalResizable,
-        mainAxisCount: child.mainAxisCount,
-        mainAxisOffsetCount: child.mainAxisOffsetCount,
-        maxCrossAxisCount: child.maxCrossAxisCount,
-        maxMainAxisCount: child.maxMainAxisCount,
-        minCrossAxisCount: child.minCrossAxisCount,
-        minMainAxisCount: child.minMainAxisCount,
-        movable: child.movable,
-        verticalResizable: child.verticalResizable,
-      );
-
-      assert(!_childrenModel.entries
-          .any((e) => e.value.checkOverlap(reactPositionedModel)));
-      assert(!_model.checkOverflow(reactPositionedModel));
-      _childrenModel.putIfAbsent(index, () => reactPositionedModel);
-    });
+    children.forEach((e) => _addChild(e));
   }
 
-  Map<int, ReactPositioned> _children;
-
-  Map<int, ReactPositionedModel> _childrenModel;
-  Map<int, ReactPositionedModel> get childrenModel => _childrenModel;
+  final Map<int, ReactPositioned> _children = <int, ReactPositioned>{};
+  Map<int, ReactPositioned> get children => _children;
 
   ReactGridViewModel _model;
+  ReactGridViewModel get model => _model;
 
   set width(double width) {
     _model = _model.copyWith(width: width);
   }
 
-  void initView() {
-    emit(ReactGridViewUpdateState(
-        _children.entries.map((e) => e.value).toList(), _model));
+  void _addChild(ReactPositioned child) {
+    assert(
+        !_children.entries.any((e) => e.value.model.checkOverlap(child.model)));
+    assert(!_model.checkOverflow(child.model));
+
+    int index = _children.isEmpty ? 0 : _children.keys.last + 1;
+    child.index = index;
+    _children.putIfAbsent(index, () => child);
   }
 
-  int findChildIndex(ReactPositioned child) {
-    return _children.entries.firstWhere((e) {
-      return e.value.crossAxisCount == child.crossAxisCount &&
-          e.value.crossAxisOffsetCount == child.crossAxisOffsetCount &&
-          e.value.horizontalResizable == child.horizontalResizable &&
-          e.value.mainAxisCount == child.mainAxisCount &&
-          e.value.mainAxisOffsetCount == child.mainAxisOffsetCount &&
-          e.value.maxCrossAxisCount == child.maxCrossAxisCount &&
-          e.value.maxMainAxisCount == child.maxMainAxisCount &&
-          e.value.minCrossAxisCount == child.minCrossAxisCount &&
-          e.value.minMainAxisCount == child.minMainAxisCount &&
-          e.value.movable == child.movable &&
-          e.value.verticalResizable == child.verticalResizable;
-    }).key;
+  void addChild(ReactPositioned child) {
+    _addChild(child);
+    emit(ReactGridViewUpdateState(
+        _children.entries.map((e) => e.value.toWidget()).toList(), _model));
+  }
+
+  void initView() {
+    emit(ReactGridViewUpdateState(
+        _children.entries.map((e) => e.value.toWidget()).toList(), _model));
   }
 }
