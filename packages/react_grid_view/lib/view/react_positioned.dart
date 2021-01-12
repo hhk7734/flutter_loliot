@@ -69,46 +69,17 @@ class _ReactPositioned extends StatefulWidget {
 class _ReactPositionedState extends State<_ReactPositioned> {
   ReactGridViewCubit _cubit;
 
-  double get crossAxisOverflow => reactGridViewModel.crossAxisSpacing >
-          reactGridViewModel.clickableWidth
-      ? 0
-      : reactGridViewModel.clickableWidth - reactGridViewModel.crossAxisSpacing;
-
-  double get height =>
-      model.mainAxisCount * reactGridViewModel.mainAxisStride +
-      mainAxisOverflow;
-
-  double get heightWithoutMargin => height - margin.vertical;
-
-  double get left =>
-      model.crossAxisOffsetCount * reactGridViewModel.crossAxisStride -
-      crossAxisOverflow / 2;
-
-  double get mainAxisOverflow => reactGridViewModel.mainAxisSpacing >
-          reactGridViewModel.clickableWidth
-      ? 0
-      : reactGridViewModel.clickableWidth - reactGridViewModel.mainAxisSpacing;
-
-  EdgeInsets get margin {
-    double cross =
-        (reactGridViewModel.crossAxisSpacing + crossAxisOverflow) / 2;
-    double main = (reactGridViewModel.mainAxisSpacing + mainAxisOverflow) / 2;
-    return EdgeInsets.fromLTRB(cross, main, cross, main);
-  }
-
   ReactPositionedModel model;
 
   ReactGridViewModel reactGridViewModel;
 
-  double get top =>
-      model.mainAxisOffsetCount * reactGridViewModel.mainAxisStride -
-      mainAxisOverflow / 2;
+  Offset offset;
 
-  double get width =>
-      model.crossAxisCount * reactGridViewModel.crossAxisStride +
-      crossAxisOverflow;
+  int previousOffsetX = 0;
+  int previousOffsetY = 0;
 
-  double get widthWithoutMargin => width - margin.horizontal;
+  int startOffsetX = 0;
+  int startOffsetY = 0;
 
   @override
   void initState() {
@@ -118,22 +89,19 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
   @override
   Widget build(BuildContext context) {
+    reactGridViewModel = _cubit.model;
     return BlocConsumer<ReactGridViewCubit, ReactGridViewState>(
       cubit: _cubit,
       buildWhen: (previous, current) {
         if (current is ReactPositionedUpdateState) {
-          if (current.childrenModel.containsKey(widget.index)) return true;
+          if (current.indexList.contains(widget.index)) {
+            return true;
+          }
         }
         return false;
       },
       builder: (context, state) {
-        if (state is ReactGridViewUpdateState) {
-          model = widget.model;
-          reactGridViewModel = state.model;
-        } else if (state is ReactPositionedUpdateState) {
-          model = state.childrenModel[widget.index];
-          reactGridViewModel = state.model;
-        }
+        model = _cubit.children[widget.index].model;
 
         return Positioned(
           left: left,
@@ -165,6 +133,8 @@ class _ReactPositionedState extends State<_ReactPositioned> {
                         width: widthWithoutMargin,
                       ),
                     ),
+                    onDragStarted: onDragStartedCallback,
+                    onDragUpdate: onDragUpdateCallback,
                   )
                 : Container(
                     child: widget.child,
@@ -176,9 +146,88 @@ class _ReactPositionedState extends State<_ReactPositioned> {
         );
       },
       listenWhen: (previous, current) {
-        return true;
+        return false;
       },
       listener: (context, state) {},
     );
+  }
+
+  // get
+
+  double get crossAxisOverflow => reactGridViewModel.crossAxisSpacing >
+          reactGridViewModel.clickableWidth
+      ? 0
+      : reactGridViewModel.clickableWidth - reactGridViewModel.crossAxisSpacing;
+
+  double get height =>
+      model.mainAxisCount * reactGridViewModel.mainAxisStride +
+      mainAxisOverflow;
+
+  double get heightWithoutMargin => height - margin.vertical;
+
+  double get left =>
+      model.crossAxisOffsetCount * reactGridViewModel.crossAxisStride -
+      crossAxisOverflow / 2;
+
+  double get mainAxisOverflow => reactGridViewModel.mainAxisSpacing >
+          reactGridViewModel.clickableWidth
+      ? 0
+      : reactGridViewModel.clickableWidth - reactGridViewModel.mainAxisSpacing;
+
+  EdgeInsets get margin {
+    double cross =
+        (reactGridViewModel.crossAxisSpacing + crossAxisOverflow) / 2;
+    double main = (reactGridViewModel.mainAxisSpacing + mainAxisOverflow) / 2;
+    return EdgeInsets.fromLTRB(cross, main, cross, main);
+  }
+
+  double get top =>
+      model.mainAxisOffsetCount * reactGridViewModel.mainAxisStride -
+      mainAxisOverflow / 2;
+
+  double get width =>
+      model.crossAxisCount * reactGridViewModel.crossAxisStride +
+      crossAxisOverflow;
+
+  double get widthWithoutMargin => width - margin.horizontal;
+
+  // move
+
+  void onDragStartedCallback() {
+    offset = Offset.zero;
+    startOffsetX = model.crossAxisOffsetCount;
+    startOffsetY = model.mainAxisOffsetCount;
+    previousOffsetX = 0;
+    previousOffsetY = 0;
+  }
+
+  void onDragUpdateCallback(DragUpdateDetails details) {
+    offset += details.delta;
+    int offsetX = (offset.dx / reactGridViewModel.crossAxisStride).round();
+    int offsetY = (offset.dy / reactGridViewModel.mainAxisStride).round();
+
+    if (offsetX == previousOffsetX && offsetY == previousOffsetY) return;
+
+    previousOffsetX = offsetX;
+    previousOffsetY = offsetY;
+
+    offsetX += startOffsetX;
+    offsetY += startOffsetY;
+
+    if (model.crossAxisOffsetCount == offsetX &&
+        model.mainAxisOffsetCount == offsetY) return;
+
+    if (offsetX < 0 ||
+        offsetX + model.crossAxisCount > reactGridViewModel.crossAxisCount)
+      return;
+
+    if (offsetY < 0 ||
+        offsetY + model.mainAxisCount > reactGridViewModel.mainAxisCount)
+      return;
+
+    _cubit.movedChild(
+        widget.index,
+        model.copyWith(
+            crossAxisOffsetCount: offsetX, mainAxisOffsetCount: offsetY));
   }
 }
