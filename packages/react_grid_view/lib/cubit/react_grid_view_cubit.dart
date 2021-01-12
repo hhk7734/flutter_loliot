@@ -43,4 +43,22 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
     emit(ReactGridViewUpdateState(
         _children.entries.map((e) => e.value.toWidget()).toList(), _model));
   }
+
+  void movedChild(int index, ReactPositionedModel model) {
+    List<int> indexList = [];
+
+    _children[index].model = model;
+    indexList.add(index);
+
+    if (indexList.length > 0) emit(ReactPositionedUpdateState(indexList));
+  }
+
+  void resizedChild(int index, ReactPositionedModel model) {
+    List<int> indexList = [];
+
+    _children[index].model = model;
+    indexList.add(index);
+
+    if (indexList.length > 0) emit(ReactPositionedUpdateState(indexList));
+  }
 }

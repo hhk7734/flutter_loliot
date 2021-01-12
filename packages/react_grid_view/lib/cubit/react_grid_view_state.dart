@@ -20,11 +20,10 @@ class ReactGridViewUpdateState extends ReactGridViewState {
 }
 
 class ReactPositionedUpdateState extends ReactGridViewState {
-  const ReactPositionedUpdateState(this.childrenModel, this.model);
+  const ReactPositionedUpdateState(this.indexList);
 
-  final Map<int, ReactPositionedModel> childrenModel;
-  final ReactGridViewModel model;
+  final List<int> indexList;
 
   @override
-  List<Object> get props => [childrenModel, model];
+  List<Object> get props => [DateTime.now()];
 }
