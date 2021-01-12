@@ -27,6 +27,10 @@ class ReactGridView extends StatelessWidget {
 
   final ReactGridViewCubit _cubit;
 
+  Map<int, ReactPositioned> get children => _cubit.children;
+
+  ReactGridViewModel get model => _cubit.model;
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -63,5 +67,9 @@ class ReactGridView extends StatelessWidget {
         );
       },
     );
+  }
+
+  void addChild({@required ReactPositioned child}) {
+    _cubit.addChild(child);
   }
 }
