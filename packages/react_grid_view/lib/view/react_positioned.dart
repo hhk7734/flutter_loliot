@@ -155,9 +155,13 @@ class _ReactPositionedState extends State<_ReactPositioned> {
         );
       },
       listenWhen: (previous, current) {
+        if (current is ReactPositionedCloseOvelayState) return true;
         return false;
       },
-      listener: (context, state) {},
+      listener: (context, state) {
+        if (state is ReactPositionedCloseOvelayState)
+          resizeOnPanDownCenterCallback(null);
+      },
     );
   }
 

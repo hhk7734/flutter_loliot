@@ -27,3 +27,8 @@ class ReactPositionedUpdateState extends ReactGridViewState {
   @override
   List<Object> get props => [DateTime.now()];
 }
+
+class ReactPositionedCloseOvelayState extends ReactGridViewState {
+  @override
+  List<Object> get props => [DateTime.now()];
+}

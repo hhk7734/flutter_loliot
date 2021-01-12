@@ -39,6 +39,10 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
         _children.entries.map((e) => e.value.toWidget()).toList(), _model));
   }
 
+  void closeResizableOverlay() {
+    emit(ReactPositionedCloseOvelayState());
+  }
+
   void initView() {
     emit(ReactGridViewUpdateState(
         _children.entries.map((e) => e.value.toWidget()).toList(), _model));
