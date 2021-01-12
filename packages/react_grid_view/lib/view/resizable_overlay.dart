@@ -139,7 +139,7 @@ class _ResizePoint extends StatelessWidget {
           children: [
             Positioned(
               child: Container(
-                color: Color.fromRGBO(0, 100, 0, 0.5),
+                color: Colors.transparent,
                 height: height,
                 width: width,
               ),
