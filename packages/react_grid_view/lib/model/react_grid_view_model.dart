@@ -6,9 +6,12 @@ import '../react_grid_view.dart';
 
 part 'react_grid_view_model.g.dart';
 
+enum ReactGridViewAlignment { none, sequential }
+
 @JsonSerializable(explicitToJson: true)
 class ReactGridViewModel extends Equatable {
   const ReactGridViewModel({
+    this.alignment = ReactGridViewAlignment.none,
     this.clickableWidth = 30,
     @required this.crossAxisCount,
     this.crossAxisSpacing = 10,
@@ -26,6 +29,8 @@ class ReactGridViewModel extends Equatable {
         crossAxisStride = width / crossAxisCount,
         height = mainAxisCount * width / crossAxisCount / gridAspectRatio,
         mainAxisStride = width / crossAxisCount / gridAspectRatio;
+
+  final ReactGridViewAlignment alignment;
 
   final double clickableWidth;
 

@@ -6,6 +6,7 @@ import '../react_grid_view.dart';
 class ReactGridView extends StatelessWidget {
   ReactGridView({
     Key key,
+    ReactGridViewAlignment alignment = ReactGridViewAlignment.none,
     List<ReactPositioned> children,
     double clickableWidth = 30,
     @required int crossAxisCount,
@@ -16,6 +17,7 @@ class ReactGridView extends StatelessWidget {
   })  : _cubit = ReactGridViewCubit(
             children ?? <ReactPositioned>[],
             ReactGridViewModel(
+              alignment: alignment,
               clickableWidth: clickableWidth,
               crossAxisCount: crossAxisCount,
               crossAxisSpacing: crossAxisSpacing,
