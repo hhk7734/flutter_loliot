@@ -63,6 +63,8 @@ class ReactGridViewModel extends Equatable {
   // Equatable
 
   ReactGridViewModel copyWith({
+    ReactGridViewAlignment alignment,
+    double clickableWidth,
     int crossAxisCount,
     double crossAxisSpacing,
     double gridAspectRatio,
@@ -71,6 +73,8 @@ class ReactGridViewModel extends Equatable {
     double width,
   }) =>
       ReactGridViewModel(
+        alignment: alignment ?? this.alignment,
+        clickableWidth: clickableWidth ?? this.clickableWidth,
         crossAxisCount: crossAxisCount ?? this.crossAxisCount,
         crossAxisSpacing: crossAxisSpacing ?? this.crossAxisSpacing,
         gridAspectRatio: gridAspectRatio ?? this.gridAspectRatio,
