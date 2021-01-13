@@ -24,8 +24,7 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
   }
 
   void _addChild(ReactPositioned child) {
-    assert(
-        !_children.entries.any((e) => e.value.model.checkOverlap(child.model)));
+    assert(!_checkOverlap(-1, child.model));
     assert(!_model.checkOverflow(child.model));
 
     int index = _children.isEmpty ? 0 : _children.keys.last + 1;
@@ -37,6 +36,13 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
     _addChild(child);
     emit(ReactGridViewUpdateState(
         _children.entries.map((e) => e.value.toWidget()).toList(), _model));
+  }
+
+  bool _checkOverlap(int excludedIndex, ReactPositionedModel model) {
+    return _children.entries.any((e) {
+      if (e.key == excludedIndex) return false;
+      return e.value.model.checkOverlap(model);
+    });
   }
 
   void closeResizableOverlay() {
@@ -51,8 +57,15 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
   void movedChild(int index, ReactPositionedModel model) {
     List<int> indexList = [];
 
-    _children[index].model = model;
-    indexList.add(index);
+    switch (_model.alignment) {
+      case ReactGridViewAlignment.none:
+        if (_checkOverlap(index, model)) return;
+        _children[index].model = model;
+        indexList.add(index);
+        break;
+      case ReactGridViewAlignment.sequential:
+        break;
+    }
 
     if (indexList.length > 0) emit(ReactPositionedUpdateState(indexList));
   }
@@ -60,8 +73,15 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
   void resizedChild(int index, ReactPositionedModel model) {
     List<int> indexList = [];
 
-    _children[index].model = model;
-    indexList.add(index);
+    switch (_model.alignment) {
+      case ReactGridViewAlignment.none:
+        if (_checkOverlap(index, model)) return;
+        _children[index].model = model;
+        indexList.add(index);
+        break;
+      case ReactGridViewAlignment.sequential:
+        break;
+    }
 
     if (indexList.length > 0) emit(ReactPositionedUpdateState(indexList));
   }
