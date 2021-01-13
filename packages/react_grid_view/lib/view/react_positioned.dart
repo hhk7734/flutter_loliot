@@ -21,6 +21,7 @@ class ReactPositioned {
     int minCrossAxisCount,
     int minMainAxisCount,
     bool movable = true,
+    this.onTapUp,
     bool verticalResizable = true,
   })  : this.key = key ?? UniqueKey(),
         model = ReactPositionedModel(
@@ -47,11 +48,14 @@ class ReactPositioned {
 
   ReactPositionedModel model;
 
+  final GestureTapUpCallback onTapUp;
+
   _ReactPositioned toWidget() => _ReactPositioned(
         key: key,
         child: child,
         cubit: cubit,
         index: index,
+        onTapUp: onTapUp,
       );
 }
 
@@ -61,6 +65,7 @@ class _ReactPositioned extends StatefulWidget {
     this.child,
     this.cubit,
     this.index,
+    this.onTapUp,
   }) : super(key: key);
 
   final Widget child;
@@ -68,6 +73,8 @@ class _ReactPositioned extends StatefulWidget {
   final ReactGridViewCubit cubit;
 
   final int index;
+
+  final GestureTapUpCallback onTapUp;
 
   @override
   _ReactPositionedState createState() => _ReactPositionedState();
@@ -149,6 +156,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
                     margin: margin,
                     width: widthWithoutMargin,
                   ),
+            onTapUp: widget.onTapUp,
           ),
         );
       },
