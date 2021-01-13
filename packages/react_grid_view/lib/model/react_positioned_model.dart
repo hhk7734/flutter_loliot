@@ -17,10 +17,10 @@ class ReactPositionedModel extends Equatable {
     this.minMainAxisCount = 1,
     this.movable = true,
     this.verticalResizable = true,
-  })  : assert(crossAxisOffsetCount >= 0 &&
-            mainAxisOffsetCount >= 0 &&
-            minCrossAxisCount > 0 &&
-            minMainAxisCount > 0),
+  })  : assert(crossAxisOffsetCount >= 0),
+        assert(mainAxisOffsetCount >= 0),
+        assert(minCrossAxisCount > 0),
+        assert(minMainAxisCount > 0),
         assert(minCrossAxisCount <= crossAxisCount &&
             crossAxisCount <= maxCrossAxisCount),
         assert(minMainAxisCount <= mainAxisCount &&

@@ -16,13 +16,13 @@ class ReactGridViewModel extends Equatable {
     @required this.mainAxisCount,
     this.mainAxisSpacing = 10,
     this.width = 1,
-  })  : assert(clickableWidth > 0 &&
-            crossAxisCount > 1 &&
-            crossAxisSpacing >= 0 &&
-            gridAspectRatio > 0 &&
-            mainAxisCount > 1 &&
-            mainAxisSpacing >= 0 &&
-            width > 0),
+  })  : assert(clickableWidth > 0),
+        assert(crossAxisCount > 1),
+        assert(crossAxisSpacing >= 0),
+        assert(gridAspectRatio > 0),
+        assert(mainAxisCount > 1),
+        assert(mainAxisSpacing >= 0),
+        assert(width > 0),
         crossAxisStride = width / crossAxisCount,
         height = mainAxisCount * width / crossAxisCount / gridAspectRatio,
         mainAxisStride = width / crossAxisCount / gridAspectRatio;
