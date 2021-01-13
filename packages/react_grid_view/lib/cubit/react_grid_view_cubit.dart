@@ -23,19 +23,37 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
     _model = _model.copyWith(width: width);
   }
 
-  void _addChild(ReactPositioned child) {
-    assert(!_checkOverlap(-1, child.model));
-    assert(!_model.checkOverflow(child.model));
+  bool _addChild(ReactPositioned child) {
+    if (_checkOverlap(-1, child.model)) return false;
+    if (_model.checkOverflow(child.model)) return false;
 
     int index = _children.isEmpty ? 0 : _children.keys.last + 1;
     child.index = index;
     _children.putIfAbsent(index, () => child);
+    return true;
   }
 
-  void addChild(ReactPositioned child) {
-    _addChild(child);
-    emit(ReactGridViewUpdateState(
-        _children.entries.map((e) => e.value.toWidget()).toList(), _model));
+  bool addChild(ReactPositioned child) {
+    int maxCrossAxisOffsetCount =
+        _model.crossAxisCount - child.model.crossAxisCount;
+    int maxMainAxisOffsetCount =
+        _model.mainAxisCount - child.model.mainAxisCount;
+    if (maxCrossAxisOffsetCount < 0 || maxMainAxisOffsetCount < 0) return false;
+
+    for (int i = 0; i <= maxMainAxisOffsetCount; i++) {
+      for (int j = 0; j <= maxCrossAxisOffsetCount; j++) {
+        child.model = child.model
+            .copyWith(crossAxisOffsetCount: j, mainAxisOffsetCount: i);
+        if (_addChild(child)) {
+          emit(ReactGridViewUpdateState(
+              _children.entries.map((e) => e.value.toWidget()).toList(),
+              _model));
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   bool _checkOverlap(int excludedIndex, ReactPositionedModel model) {
