@@ -16,10 +16,10 @@ class ReactPositioned {
     bool horizontalResizable = true,
     int mainAxisCount = 1,
     int mainAxisOffsetCount = 0,
-    int maxCrossAxisCount = 1,
-    int maxMainAxisCount = 1,
-    int minCrossAxisCount = 1,
-    int minMainAxisCount = 1,
+    int maxCrossAxisCount,
+    int maxMainAxisCount,
+    int minCrossAxisCount,
+    int minMainAxisCount,
     bool movable = true,
     bool verticalResizable = true,
   })  : this.key = key ?? UniqueKey(),
@@ -29,15 +29,17 @@ class ReactPositioned {
           horizontalResizable: horizontalResizable,
           mainAxisCount: mainAxisCount,
           mainAxisOffsetCount: mainAxisOffsetCount,
-          maxCrossAxisCount: maxCrossAxisCount,
-          maxMainAxisCount: maxMainAxisCount,
-          minCrossAxisCount: minCrossAxisCount,
-          minMainAxisCount: minMainAxisCount,
+          maxCrossAxisCount: maxCrossAxisCount ?? crossAxisCount,
+          maxMainAxisCount: maxMainAxisCount ?? mainAxisCount,
+          minCrossAxisCount: minCrossAxisCount ?? crossAxisCount,
+          minMainAxisCount: minMainAxisCount ?? mainAxisCount,
           movable: movable,
           verticalResizable: verticalResizable,
         );
 
   final Widget child;
+
+  ReactGridViewCubit cubit;
 
   int index;
 
@@ -48,6 +50,7 @@ class ReactPositioned {
   _ReactPositioned toWidget() => _ReactPositioned(
         key: key,
         child: child,
+        cubit: cubit,
         index: index,
       );
 }
@@ -56,10 +59,13 @@ class _ReactPositioned extends StatefulWidget {
   _ReactPositioned({
     Key key,
     this.child,
+    this.cubit,
     this.index,
   }) : super(key: key);
 
   final Widget child;
+
+  final ReactGridViewCubit cubit;
 
   final int index;
 
@@ -68,8 +74,6 @@ class _ReactPositioned extends StatefulWidget {
 }
 
 class _ReactPositionedState extends State<_ReactPositioned> {
-  ReactGridViewCubit _cubit;
-
   ReactPositionedModel model;
 
   ReactGridViewModel reactGridViewModel;
@@ -90,16 +94,10 @@ class _ReactPositionedState extends State<_ReactPositioned> {
   double startWidth;
 
   @override
-  void initState() {
-    super.initState();
-    _cubit = context.read<ReactGridViewCubit>();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    reactGridViewModel = _cubit.model;
+    reactGridViewModel = widget.cubit.model;
     return BlocConsumer<ReactGridViewCubit, ReactGridViewState>(
-      cubit: _cubit,
+      cubit: widget.cubit,
       buildWhen: (previous, current) {
         if (current is ReactPositionedUpdateState) {
           if (current.indexList.contains(widget.index)) {
@@ -109,7 +107,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
         return false;
       },
       builder: (context, state) {
-        model = _cubit.children[widget.index].model;
+        model = widget.cubit.children[widget.index].model;
 
         return Positioned(
           left: left,
@@ -249,7 +247,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
         previousMainAxisOffsetCount != mainAxisOffsetCount) {
       previousCrossAxisOffsetCount = crossAxisOffsetCount;
       previousMainAxisOffsetCount = mainAxisOffsetCount;
-      _cubit.movedChild(
+      widget.cubit.movedChild(
           widget.index,
           model.copyWith(
               crossAxisOffsetCount: crossAxisOffsetCount,
@@ -336,7 +334,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousMainAxisCount != mainAxisCount) {
       previousMainAxisCount = mainAxisCount;
-      _cubit.resizedChild(
+      widget.cubit.resizedChild(
           widget.index, startModel.copyWith(mainAxisCount: mainAxisCount));
     }
   }
@@ -367,7 +365,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousCrossAxisCount != crossAxisCount) {
       previousCrossAxisCount = crossAxisCount;
-      _cubit.resizedChild(
+      widget.cubit.resizedChild(
           widget.index,
           startModel.copyWith(
               crossAxisCount: crossAxisCount,
@@ -398,7 +396,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousCrossAxisCount != crossAxisCount) {
       previousCrossAxisCount = crossAxisCount;
-      _cubit.resizedChild(
+      widget.cubit.resizedChild(
           widget.index,
           startModel.copyWith(
             crossAxisCount: crossAxisCount,
@@ -432,7 +430,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousMainAxisCount != mainAxisCount) {
       previousMainAxisCount = mainAxisCount;
-      _cubit.resizedChild(
+      widget.cubit.resizedChild(
           widget.index,
           startModel.copyWith(
               mainAxisCount: mainAxisCount,
