@@ -93,6 +93,9 @@ class _AppViewState extends State<AppView> {
             mainAxisCount: 6,
           ),
         );
+
+        prefs.setString(
+            "project_list_model", jsonEncode(projectListModel.toJson()));
       }
 
       _navigator.pushAndRemoveUntil<void>(
