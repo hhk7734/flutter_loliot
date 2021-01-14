@@ -38,6 +38,13 @@ class ReactPositioned {
           verticalResizable: verticalResizable,
         );
 
+  ReactPositioned.fromModel({
+    Key key,
+    this.child,
+    this.model,
+    this.onTapUp,
+  }) : this.key = key ?? UniqueKey();
+
   final Widget child;
 
   ReactGridViewCubit cubit;
