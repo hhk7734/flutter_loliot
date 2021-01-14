@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:react_grid_view/react_grid_view.dart';
 
@@ -6,13 +7,28 @@ part 'project_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class ProjectModel {
   ProjectModel({
+    this.name,
     this.reactGridViewModel,
     this.reactPositionedModel,
   });
 
+  String name;
+
   ReactGridViewModel reactGridViewModel;
 
   ReactPositionedModel reactPositionedModel;
+
+  ReactPositioned toAvatar() {
+    return ReactPositioned.fromModel(
+      child: Container(
+        color: Colors.grey,
+        child: Center(
+          child: Text("$name"),
+        ),
+      ),
+      model: reactPositionedModel,
+    );
+  }
 
   // JsonSerializable
 
