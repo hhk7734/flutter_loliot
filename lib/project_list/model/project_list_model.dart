@@ -8,11 +8,11 @@ part 'project_list_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class ProjectListModel {
   ProjectListModel({
-    this.projectModelList,
+    List<ProjectModel> projectModelList,
     this.reactGridViewModel,
-  });
+  }) : this.projectModelList = projectModelList ?? <ProjectModel>[];
 
-  List<ProjectModel> projectModelList = <ProjectModel>[];
+  List<ProjectModel> projectModelList;
 
   ReactGridViewModel reactGridViewModel;
 
