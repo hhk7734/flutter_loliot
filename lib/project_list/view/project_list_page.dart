@@ -1,25 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:react_grid_view/react_grid_view.dart';
 
+import '../project/project.dart';
 import '../project_list.dart';
 
 class ProjectListPage extends StatelessWidget {
   ProjectListPage({
     Key key,
     ProjectListModel model,
+    List<ProjectModel> projectModelList,
   })  : reactGridView = ReactGridView.fromModel(
-            children: model.projectModelList
-                .map((e) => ReactPositioned.fromModel(
-                      model: e.reactPositionedModel,
-                    ))
-                .toList(),
-            model: model.reactGridViewModel),
+          children: projectModelList
+              .map<ReactPositioned>((e) => e.toAvatar())
+              .toList(),
+          model: model.reactGridViewModel,
+        ),
         super(key: key);
-
-  static Route route(ProjectListModel model) {
-    return MaterialPageRoute<void>(
-        builder: (_) => ProjectListPage(model: model));
-  }
 
   final ReactGridView reactGridView;
 
@@ -31,5 +27,16 @@ class ProjectListPage extends StatelessWidget {
       ),
       body: reactGridView,
     );
+  }
+
+  static Route route({
+    ProjectListModel model,
+    List<ProjectModel> projectModelList,
+  }) {
+    return MaterialPageRoute<void>(
+        builder: (_) => ProjectListPage(
+              model: model,
+              projectModelList: projectModelList,
+            ));
   }
 }

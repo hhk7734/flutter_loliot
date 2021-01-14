@@ -7,6 +7,7 @@ import 'package:react_grid_view/react_grid_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'authentication/authentication.dart';
+import 'project_list/project/project.dart';
 import 'project_list/project_list.dart';
 import 'sign_in/sign_in.dart';
 import 'splash/splash.dart';
@@ -86,14 +87,23 @@ class _AppViewState extends State<AppView> {
             ProjectListModel.fromJson(jsonDecode(projectListString));
       } else {
         projectListModel = ProjectListModel(
-            reactGridViewModel: ReactGridViewModel(
-          alignment: ReactGridViewAlignment.sequential,
-          crossAxisCount: 2,
-          mainAxisCount: 6,
-        ));
+          reactGridViewModel: ReactGridViewModel(
+            alignment: ReactGridViewAlignment.sequential,
+            crossAxisCount: 2,
+            mainAxisCount: 6,
+          ),
+        );
       }
+
       _navigator.pushAndRemoveUntil<void>(
-        ProjectListPage.route(projectListModel),
+        ProjectListPage.route(
+          model: projectListModel,
+          projectModelList:
+              projectListModel.projectNameList.map<ProjectModel>((e) {
+            String projectString = prefs.getString(e);
+            return ProjectModel.fromJson(jsonDecode(projectString));
+          }),
+        ),
         (route) => false,
       );
     });
