@@ -10,7 +10,7 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
   ReactGridViewCubit(List<ReactPositioned> children, ReactGridViewModel model)
       : _model = model,
         super(ReactGridViewInitial()) {
-    children.forEach((e) => _addChild(e));
+    if (children != null) children.forEach((e) => _addChild(e));
   }
 
   final Map<int, ReactPositioned> _children = <int, ReactPositioned>{};
