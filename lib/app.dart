@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:react_grid_view/react_grid_view.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-import './authentication/authentication.dart';
-import './project_list/project_list.dart';
-import './sign_in/sign_in.dart';
-import './splash/splash.dart';
+import 'authentication/authentication.dart';
+import 'project_list/project_list.dart';
+import 'sign_in/sign_in.dart';
+import 'splash/splash.dart';
 
 class App extends StatelessWidget {
   @override
@@ -21,9 +25,11 @@ class AppView extends StatefulWidget {
 
 class _AppViewState extends State<AppView> {
   final _navigatorKey = GlobalKey<NavigatorState>();
+  NavigatorState get _navigator => _navigatorKey.currentState;
+
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
-  NavigatorState get _navigator => _navigatorKey.currentState;
+  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -47,10 +53,7 @@ class _AppViewState extends State<AppView> {
                       listener: (_, state) {
                         switch (state.status) {
                           case AuthenticationStatus.authenticated:
-                            _navigator.pushAndRemoveUntil<void>(
-                              ProjectListPage.route(),
-                              (route) => false,
-                            );
+                            _navigateToProjectListPage();
                             break;
                           case AuthenticationStatus.unauthenticated:
                             _navigator.pushAndRemoveUntil<void>(
@@ -72,5 +75,27 @@ class _AppViewState extends State<AppView> {
       },
       onGenerateRoute: (_) => SplashPage.route(),
     );
+  }
+
+  void _navigateToProjectListPage() {
+    _prefs.then((prefs) {
+      String projectListString = prefs.getString("project_list_model");
+      ProjectListModel projectListModel;
+      if (projectListString != null) {
+        projectListModel =
+            ProjectListModel.fromJson(jsonDecode(projectListString));
+      } else {
+        projectListModel = ProjectListModel(
+            reactGridViewModel: ReactGridViewModel(
+          alignment: ReactGridViewAlignment.sequential,
+          crossAxisCount: 2,
+          mainAxisCount: 6,
+        ));
+      }
+      _navigator.pushAndRemoveUntil<void>(
+        ProjectListPage.route(projectListModel),
+        (route) => false,
+      );
+    });
   }
 }
