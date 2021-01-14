@@ -102,7 +102,7 @@ class _AppViewState extends State<AppView> {
               projectListModel.projectNameList.map<ProjectModel>((e) {
             String projectString = prefs.getString(e);
             return ProjectModel.fromJson(jsonDecode(projectString));
-          }),
+          }).toList(),
         ),
         (route) => false,
       );
