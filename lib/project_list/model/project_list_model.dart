@@ -1,18 +1,16 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:react_grid_view/react_grid_view.dart';
 
-import '../project/project.dart';
-
 part 'project_list_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class ProjectListModel {
   ProjectListModel({
-    List<ProjectModel> projectModelList,
+    List<String> projectNameList,
     this.reactGridViewModel,
-  }) : this.projectModelList = projectModelList ?? <ProjectModel>[];
+  }) : this.projectNameList = projectNameList ?? <String>[];
 
-  List<ProjectModel> projectModelList;
+  List<String> projectNameList;
 
   ReactGridViewModel reactGridViewModel;
 
