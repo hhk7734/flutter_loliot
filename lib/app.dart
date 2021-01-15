@@ -1,13 +1,8 @@
-import 'dart:convert';
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:react_grid_view/react_grid_view.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'authentication/authentication.dart';
-import 'project_list/project/project.dart';
 import 'project_list/project_list.dart';
 import 'sign_in/sign_in.dart';
 import 'splash/splash.dart';
@@ -29,8 +24,6 @@ class _AppViewState extends State<AppView> {
   NavigatorState get _navigator => _navigatorKey.currentState;
 
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   @override
   Widget build(BuildContext context) {
@@ -79,36 +72,12 @@ class _AppViewState extends State<AppView> {
   }
 
   void _navigateToProjectListPage() {
-    _prefs.then((prefs) {
-      String projectListString = prefs.getString("project_list_model");
-      ProjectListModel projectListModel;
-      if (projectListString != null) {
-        projectListModel =
-            ProjectListModel.fromJson(jsonDecode(projectListString));
-      } else {
-        projectListModel = ProjectListModel(
-          reactGridViewModel: ReactGridViewModel(
-            alignment: ReactGridViewAlignment.sequential,
-            crossAxisCount: 2,
-            mainAxisCount: 6,
-          ),
-        );
-
-        prefs.setString(
-            "project_list_model", jsonEncode(projectListModel.toJson()));
-      }
-
-      _navigator.pushAndRemoveUntil<void>(
-        ProjectListPage.route(
-          model: projectListModel,
-          projectModelList:
-              projectListModel.projectNameList.map<ProjectModel>((e) {
-            String projectString = prefs.getString(e);
-            return ProjectModel.fromJson(jsonDecode(projectString));
-          }).toList(),
-        ),
-        (route) => false,
-      );
-    });
+    ProjectRepository projectRepository = ProjectRepository();
+    projectRepository
+        .init()
+        .then((value) => _navigator.pushAndRemoveUntil<void>(
+              ProjectListPage.route(projectRepository: projectRepository),
+              (route) => false,
+            ));
   }
 }
