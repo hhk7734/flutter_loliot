@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -118,4 +120,9 @@ class ReactPositionedModel extends Equatable {
       _$ReactPositionedModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ReactPositionedModelToJson(this);
+
+  factory ReactPositionedModel.fromString(String jsonString) =>
+      ReactPositionedModel.fromJson(jsonDecode(jsonString));
+
+  String toString() => jsonEncode(toJson());
 }

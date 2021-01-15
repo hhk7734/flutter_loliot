@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:react_grid_view/react_grid_view.dart';
@@ -36,4 +38,9 @@ class ProjectModel {
       _$ProjectModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProjectModelToJson(this);
+
+  factory ProjectModel.fromString(String jsonString) =>
+      ProjectModel.fromJson(jsonDecode(jsonString));
+
+  String toString() => jsonEncode(toJson());
 }

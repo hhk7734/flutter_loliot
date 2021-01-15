@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:json_annotation/json_annotation.dart';
 import 'package:react_grid_view/react_grid_view.dart';
 
@@ -20,4 +22,9 @@ class ProjectListModel {
       _$ProjectListModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ProjectListModelToJson(this);
+
+  factory ProjectListModel.fromString(String jsonString) =>
+      ProjectListModel.fromJson(jsonDecode(jsonString));
+
+  String toString() => jsonEncode(toJson());
 }

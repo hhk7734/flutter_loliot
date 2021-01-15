@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -99,4 +101,9 @@ class ReactGridViewModel extends Equatable {
       _$ReactGridViewModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$ReactGridViewModelToJson(this);
+
+  factory ReactGridViewModel.fromString(String jsonString) =>
+      ReactGridViewModel.fromJson(jsonDecode(jsonString));
+
+  String toString() => jsonEncode(toJson());
 }
