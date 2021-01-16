@@ -13,10 +13,6 @@ ProjectModel _$ProjectModelFromJson(Map<String, dynamic> json) {
         ? null
         : ReactGridViewModel.fromJson(
             json['reactGridViewModel'] as Map<String, dynamic>),
-    reactPositionedModel: json['reactPositionedModel'] == null
-        ? null
-        : ReactPositionedModel.fromJson(
-            json['reactPositionedModel'] as Map<String, dynamic>),
   );
 }
 
@@ -24,5 +20,4 @@ Map<String, dynamic> _$ProjectModelToJson(ProjectModel instance) =>
     <String, dynamic>{
       'name': instance.name,
       'reactGridViewModel': instance.reactGridViewModel?.toJson(),
-      'reactPositionedModel': instance.reactPositionedModel?.toJson(),
     };

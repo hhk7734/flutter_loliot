@@ -11,14 +11,11 @@ class ProjectModel {
   ProjectModel({
     this.name,
     this.reactGridViewModel,
-    this.reactPositionedModel,
   });
 
   String name;
 
   ReactGridViewModel reactGridViewModel;
-
-  ReactPositionedModel reactPositionedModel;
 
   ReactPositioned toAvatar() {
     return ReactPositioned.fromModel(
@@ -28,7 +25,7 @@ class ProjectModel {
           child: Text("$name"),
         ),
       ),
-      model: reactPositionedModel,
+      model: ReactPositionedModel(),
     );
   }
 
