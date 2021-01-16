@@ -5,6 +5,7 @@ import '../project/project.dart';
 import '../project_list.dart';
 
 const String kProjectListModelKey = "loliot_project_list_model";
+const String kProjectKeyPrefix = "loliot_project_name_";
 
 class ProjectRepository {
   SharedPreferences _prefs;
@@ -32,8 +33,26 @@ class ProjectRepository {
     }
 
     projectModelList = projectListModel.projectNameSet
-        .map<ProjectModel>(
-            (key) => ProjectModel.fromString(_prefs.getString(key)))
+        .map<ProjectModel>((key) =>
+            ProjectModel.fromString(_prefs.getString(kProjectKeyPrefix + key)))
         .toList();
+  }
+
+  void createProject(String name) {
+    ProjectModel projectModel = ProjectModel(
+      name: name,
+      reactGridViewModel: ReactGridViewModel(
+        alignment: ReactGridViewAlignment.none,
+        crossAxisCount: 8,
+        mainAxisCount: 12,
+      ),
+    );
+
+    projectListModel.projectNameSet.add(name);
+    projectModelList.add(projectModel);
+
+    _prefs.setString(kProjectListModelKey, projectListModel.toString());
+    _prefs.setString(
+        kProjectKeyPrefix + projectModel.name, projectModel.toString());
   }
 }
