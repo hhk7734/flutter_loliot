@@ -37,8 +37,12 @@ class _AppViewState extends State<AppView> {
             if (snapshot.connectionState == ConnectionState.done) {
               final AuthenticationRepository authenticationRepository =
                   AuthenticationRepository();
-              return RepositoryProvider.value(
-                  value: authenticationRepository,
+              final ProjectRepository projectRepository = ProjectRepository();
+              return MultiRepositoryProvider(
+                  providers: [
+                    RepositoryProvider(create: (_) => authenticationRepository),
+                    RepositoryProvider(create: (_) => projectRepository),
+                  ],
                   child: BlocProvider(
                     create: (_) => AuthenticationCubit(
                         authenticationRepository: authenticationRepository),
@@ -47,7 +51,11 @@ class _AppViewState extends State<AppView> {
                       listener: (_, state) {
                         switch (state.status) {
                           case AuthenticationStatus.authenticated:
-                            _navigateToProjectListPage();
+                            projectRepository.init().then(
+                                (value) => _navigator.pushAndRemoveUntil<void>(
+                                      ProjectListPage.route(),
+                                      (route) => false,
+                                    ));
                             break;
                           case AuthenticationStatus.unauthenticated:
                             _navigator.pushAndRemoveUntil<void>(
@@ -69,15 +77,5 @@ class _AppViewState extends State<AppView> {
       },
       onGenerateRoute: (_) => SplashPage.route(),
     );
-  }
-
-  void _navigateToProjectListPage() {
-    ProjectRepository projectRepository = ProjectRepository();
-    projectRepository
-        .init()
-        .then((value) => _navigator.pushAndRemoveUntil<void>(
-              ProjectListPage.route(projectRepository: projectRepository),
-              (route) => false,
-            ));
   }
 }
