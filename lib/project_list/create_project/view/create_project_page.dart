@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 import '../create_project.dart';
-import '../../project/project.dart';
 import '../../project_list.dart';
 
 class CreateProjectPage extends StatelessWidget {
@@ -30,7 +29,7 @@ class CreateProjectPage extends StatelessWidget {
   }
 
   static Route route() {
-    return MaterialPageRoute<ProjectModel>(builder: (_) => CreateProjectPage());
+    return MaterialPageRoute<bool>(builder: (_) => CreateProjectPage());
   }
 }
 
@@ -74,9 +73,10 @@ class _CreateButton extends StatelessWidget {
           child: Text("create"),
           onPressed: state.status.isValidated
               ? () {
-                  Navigator.of(context).pop(context
+                  context
                       .read<CreateProjectCubit>()
-                      .create(state.projectName.value));
+                      .create(state.projectName.value);
+                  Navigator.of(context).pop(true);
                 }
               : null,
         );
