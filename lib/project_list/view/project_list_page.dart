@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:react_grid_view/react_grid_view.dart';
 
 import '../project_list.dart';
+import '../../authentication/authentication.dart';
 
 class ProjectListPage extends StatefulWidget {
   @override
@@ -34,6 +35,16 @@ class _ProjectListPageState extends State<ProjectListPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Project List"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: () {
+              context
+                  .read<AuthenticationCubit>()
+                  .authenticationLogoutRequested();
+            },
+          ),
+        ],
       ),
       body: reactGridView,
     );
