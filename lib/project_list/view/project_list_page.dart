@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:react_grid_view/react_grid_view.dart';
 
+import '../create_project/create_project.dart';
 import '../project_list.dart';
 import '../../authentication/authentication.dart';
 
@@ -36,6 +37,20 @@ class _ProjectListPageState extends State<ProjectListPage> {
       appBar: AppBar(
         title: Text("Project List"),
         actions: [
+          IconButton(
+            icon: Icon(Icons.add_box),
+            onPressed: () {
+              Navigator.of(context)
+                  .push<bool>(CreateProjectPage.route())
+                  .then((value) {
+                if (value != null && value) {
+                  reactGridView.addChild(
+                      child:
+                          projectRepository.projectModelList.last.toAvatar());
+                }
+              });
+            },
+          ),
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
