@@ -12,8 +12,13 @@ part 'project_model.g.dart';
 class ProjectModel {
   ProjectModel({
     this.name,
-    this.reactGridViewModel,
-  });
+    ReactGridViewModel reactGridViewModel,
+  }) : this.reactGridViewModel = reactGridViewModel ??
+            ReactGridViewModel(
+              alignment: ReactGridViewAlignment.none,
+              crossAxisCount: 8,
+              mainAxisCount: 12,
+            );
 
   String name;
 
