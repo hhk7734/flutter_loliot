@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:react_grid_view/react_grid_view.dart';
 
-import '../create_project/create_project.dart';
 import '../project_list.dart';
 import '../../authentication/authentication.dart';
+import '../../create_project/create_project.dart';
 
 class ProjectListPage extends StatefulWidget {
   @override
