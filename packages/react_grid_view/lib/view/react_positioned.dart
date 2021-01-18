@@ -64,6 +64,10 @@ class ReactPositioned {
         index: index,
         onTapUp: onTapUp,
       );
+
+  void removeSelf() {
+    cubit.removeChild(index);
+  }
 }
 
 class _ReactPositioned extends StatefulWidget {
