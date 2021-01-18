@@ -26,8 +26,4 @@ class CreateProjectCubit extends Cubit<CreateProjectState> {
       status: Formz.validate([projectName]),
     ));
   }
-
-  void create(String name) {
-    loliotRepository.createProject(name);
-  }
 }

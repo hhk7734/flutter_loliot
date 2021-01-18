@@ -40,18 +40,11 @@ class LoliotRepository {
         .toList();
   }
 
-  void createProject(String name) {
-    ProjectModel projectModel = ProjectModel(
-      name: name,
-      reactGridViewModel: ReactGridViewModel(
-        alignment: ReactGridViewAlignment.none,
-        crossAxisCount: 8,
-        mainAxisCount: 12,
-      ),
-    );
-
-    projectListModel.projectNameSet.add(name);
+  void addProject(ProjectModel projectModel) {
+    projectListModel.projectNameSet.add(projectModel.name);
     projectModelList.add(projectModel);
+    projectNameMap.putIfAbsent(
+        projectModel.reactPositioned.index, () => projectModel.name);
 
     _prefs.setString(kProjectListModelKey, projectListModel.toString());
     _prefs.setString(

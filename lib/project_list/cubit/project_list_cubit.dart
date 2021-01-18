@@ -6,6 +6,7 @@ import 'package:react_grid_view/react_grid_view.dart';
 
 import '../../create_project/create_project.dart';
 import '../../loliot/loliot.dart';
+import '../../project/project.dart';
 
 part 'project_list_state.dart';
 
@@ -30,10 +31,12 @@ class ProjectListCubit extends Cubit<ProjectListState> {
   }
 
   void createProject(BuildContext context) {
-    Navigator.of(context).push<bool>(CreateProjectPage.route()).then((value) {
-      if (value != null && value) {
-        _reactGridView.addChild(
-            child: _loliotRepository.projectModelList.last.toAvatar(context));
+    Navigator.of(context)
+        .push<ProjectModel>(CreateProjectPage.route())
+        .then((projectModel) {
+      if (projectModel != null) {
+        _reactGridView.addChild(child: projectModel.toAvatar(context));
+        _loliotRepository.addProject(projectModel);
       }
     });
   }

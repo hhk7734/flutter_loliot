@@ -4,6 +4,7 @@ import 'package:formz/formz.dart';
 
 import '../create_project.dart';
 import '../../loliot/loliot.dart';
+import '../../project/project.dart';
 
 class CreateProjectPage extends StatelessWidget {
   @override
@@ -29,7 +30,7 @@ class CreateProjectPage extends StatelessWidget {
   }
 
   static Route route() {
-    return MaterialPageRoute<bool>(builder: (_) => CreateProjectPage());
+    return MaterialPageRoute<ProjectModel>(builder: (_) => CreateProjectPage());
   }
 }
 
@@ -72,12 +73,8 @@ class _CreateButton extends StatelessWidget {
         return FlatButton(
           child: Text("create"),
           onPressed: state.status.isValidated
-              ? () {
-                  context
-                      .read<CreateProjectCubit>()
-                      .create(state.projectName.value);
-                  Navigator.of(context).pop(true);
-                }
+              ? () => Navigator.of(context)
+                  .pop(ProjectModel(name: state.projectName.value))
               : null,
         );
       },
