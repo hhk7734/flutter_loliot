@@ -1,8 +1,8 @@
 import 'package:react_grid_view/react_grid_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../project/project.dart';
 import '../project_list.dart';
+import '../../project/project.dart';
 
 const String kProjectListModelKey = "loliot_project_list_model";
 const String kProjectKeyPrefix = "loliot_project_name_";
