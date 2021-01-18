@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 import '../create_project.dart';
-import '../../project_list.dart';
+import '../../project_list/project_list.dart';
 
 class CreateProjectPage extends StatelessWidget {
   @override

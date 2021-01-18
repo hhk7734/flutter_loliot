@@ -4,7 +4,7 @@ import 'package:formz/formz.dart';
 import 'package:meta/meta.dart';
 
 import '../create_project.dart';
-import '../../project_list.dart';
+import '../../project_list/project_list.dart';
 
 part 'create_project_state.dart';
 
