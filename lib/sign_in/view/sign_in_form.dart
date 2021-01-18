@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:formz/formz.dart';
 
 import '../sign_in.dart';
+import '../../sign_up/sign_up.dart';
 
 class SignInForm extends StatelessWidget {
   @override
