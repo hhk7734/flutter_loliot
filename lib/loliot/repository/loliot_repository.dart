@@ -14,6 +14,8 @@ class LoliotRepository {
 
   List<ProjectModel> projectModelList;
 
+  Map<int, String> projectNameMap = {};
+
   Future<void> init() async {
     _prefs = await SharedPreferences.getInstance();
 
@@ -54,5 +56,24 @@ class LoliotRepository {
     _prefs.setString(kProjectListModelKey, projectListModel.toString());
     _prefs.setString(
         kProjectKeyPrefix + projectModel.name, projectModel.toString());
+  }
+
+  void projectListRearrange(List<int> indexList) {
+    if (!projectNameMap.keys.contains(indexList[0])) {
+      projectModelList.forEach((projectModel) {
+        projectNameMap.putIfAbsent(
+            projectModel.reactPositioned.index, () => projectModel.name);
+      });
+    }
+
+    indexList.forEach((index) {
+      projectListModel.projectNameSet.remove(projectNameMap[index]);
+    });
+
+    indexList.forEach((index) {
+      projectListModel.projectNameSet.add(projectNameMap[index]);
+    });
+
+    _prefs.setString(kProjectListModelKey, projectListModel.toString());
   }
 }
