@@ -25,7 +25,7 @@ class _ProjectListPageState extends State<ProjectListPage> {
     projectRepository = context.read<ProjectRepository>();
     reactGridView = ReactGridView.fromModel(
       children: projectRepository.projectModelList
-          .map<ReactPositioned>((e) => e.toAvatar())
+          .map<ReactPositioned>((e) => e.toAvatar(context))
           .toList(),
       model: projectRepository.projectListModel.reactGridViewModel,
     );
@@ -45,8 +45,8 @@ class _ProjectListPageState extends State<ProjectListPage> {
                   .then((value) {
                 if (value != null && value) {
                   reactGridView.addChild(
-                      child:
-                          projectRepository.projectModelList.last.toAvatar());
+                      child: projectRepository.projectModelList.last
+                          .toAvatar(context));
                 }
               });
             },
