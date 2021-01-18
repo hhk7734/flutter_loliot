@@ -25,6 +25,8 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
   ReactGridViewModel _model;
   ReactGridViewModel get model => _model;
 
+  List<int> _movedIndexList = [];
+
   ReactGridViewChildrenMoveCallback _onChildrenMove;
 
   final List<int> _sequentialIndexList = <int>[];
@@ -110,23 +112,20 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
     });
   }
 
-  void closeResizableOverlay() {
-    emit(ReactPositionedCloseOvelayState());
+  void childMoveEnded() {
+    if (_movedIndexList.length > 0) {
+      if (_onChildrenMove != null) _onChildrenMove(_movedIndexList);
+    }
   }
 
-  void initView() {
-    emit(ReactGridViewUpdateState(
-        _children.entries.map((e) => e.value.toWidget()).toList(), _model));
-  }
-
-  void movedChild(int childIndex, ReactPositionedModel model) {
-    List<int> indexList = [];
+  void childMoveUpdated(int childIndex, ReactPositionedModel model) {
+    _movedIndexList.clear();
 
     switch (_model.alignment) {
       case ReactGridViewAlignment.none:
         if (_checkOverlap(childIndex, model)) return;
         _children[childIndex].model = model;
-        indexList.add(childIndex);
+        _movedIndexList.add(childIndex);
         break;
 
       case ReactGridViewAlignment.sequential:
@@ -164,10 +163,10 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
           _sequentialIndexList.add(childIndex);
         }
 
-        indexList = _sequentialIndexList.sublist(startIndex);
+        _movedIndexList = _sequentialIndexList.sublist(startIndex);
 
-        for (int i = 0; i < indexList.length; i++) {
-          _children[indexList[i]].model = _children[indexList[i]]
+        for (int i = 0; i < _movedIndexList.length; i++) {
+          _children[_movedIndexList[i]].model = _children[_movedIndexList[i]]
               .model
               .copyWith(
                   crossAxisOffsetCount:
@@ -178,10 +177,18 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
         break;
     }
 
-    if (indexList.length > 0) {
-      if (_onChildrenMove != null) _onChildrenMove(indexList);
-      emit(ReactPositionedUpdateState(indexList));
+    if (_movedIndexList.length > 0) {
+      emit(ReactPositionedUpdateState(_movedIndexList));
     }
+  }
+
+  void closeResizableOverlay() {
+    emit(ReactPositionedCloseOvelayState());
+  }
+
+  void initView() {
+    emit(ReactGridViewUpdateState(
+        _children.entries.map((e) => e.value.toWidget()).toList(), _model));
   }
 
   void removeChild(int childIndex) {

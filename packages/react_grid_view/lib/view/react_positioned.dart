@@ -266,7 +266,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
         previousMainAxisOffsetCount != mainAxisOffsetCount) {
       previousCrossAxisOffsetCount = crossAxisOffsetCount;
       previousMainAxisOffsetCount = mainAxisOffsetCount;
-      widget.cubit.movedChild(
+      widget.cubit.childMoveUpdated(
           widget.index,
           model.copyWith(
               crossAxisOffsetCount: crossAxisOffsetCount,
@@ -277,6 +277,8 @@ class _ReactPositionedState extends State<_ReactPositioned> {
   // resize
 
   void onDragEndCallback(DraggableDetails details) {
+    widget.cubit.childMoveEnded();
+
     if (resizable && overlay == null) {
       final RenderBox box = context.findRenderObject() as RenderBox;
       final Offset globalOffset = box.localToGlobal(Offset.zero);
