@@ -12,8 +12,10 @@ part 'project_model.g.dart';
 class ProjectModel {
   ProjectModel({
     this.name,
+    List<ProjectItem> projectItemList,
     ReactGridViewModel reactGridViewModel,
-  }) : this.reactGridViewModel = reactGridViewModel ??
+  })  : this.projectItemList = projectItemList ?? [],
+        this.reactGridViewModel = reactGridViewModel ??
             ReactGridViewModel(
               alignment: ReactGridViewAlignment.none,
               crossAxisCount: 8,
@@ -21,6 +23,8 @@ class ProjectModel {
             );
 
   String name;
+
+  List<ProjectItem> projectItemList;
 
   ReactGridViewModel reactGridViewModel;
 
