@@ -6,9 +6,15 @@ import '../react_grid_view.dart';
 
 part 'react_grid_view_state.dart';
 
+typedef ReactGridViewChildrenMoveCallback = void Function(List<int> indexList);
+
 class ReactGridViewCubit extends Cubit<ReactGridViewState> {
-  ReactGridViewCubit(List<ReactPositioned> children, ReactGridViewModel model)
-      : _model = model,
+  ReactGridViewCubit({
+    List<ReactPositioned> children,
+    ReactGridViewModel model,
+    ReactGridViewChildrenMoveCallback onChildrenMove,
+  })  : _model = model,
+        _onChildrenMove = onChildrenMove,
         super(ReactGridViewInitial()) {
     if (children != null) children.forEach((e) => _addChild(e));
   }
@@ -18,6 +24,8 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
 
   ReactGridViewModel _model;
   ReactGridViewModel get model => _model;
+
+  ReactGridViewChildrenMoveCallback _onChildrenMove;
 
   final List<int> _sequentialIndexList = <int>[];
 
@@ -170,7 +178,10 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
         break;
     }
 
-    if (indexList.length > 0) emit(ReactPositionedUpdateState(indexList));
+    if (indexList.length > 0) {
+      if (_onChildrenMove != null) _onChildrenMove(indexList);
+      emit(ReactPositionedUpdateState(indexList));
+    }
   }
 
   void removeChild(int childIndex) {
