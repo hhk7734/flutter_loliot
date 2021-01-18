@@ -4,20 +4,20 @@ import 'package:formz/formz.dart';
 import 'package:meta/meta.dart';
 
 import '../create_project.dart';
-import '../../project_list/project_list.dart';
+import '../../loliot/loliot.dart';
 
 part 'create_project_state.dart';
 
 class CreateProjectCubit extends Cubit<CreateProjectState> {
   CreateProjectCubit({
-    @required this.projectRepository,
+    @required this.loliotRepository,
   }) : super(CreateProjectState());
 
-  final ProjectRepository projectRepository;
+  final LoliotRepository loliotRepository;
 
   void projectNameChanged(String value) {
     final projectName = ProjectName.dirty(
-      projectNameSet: projectRepository.projectListModel.projectNameSet,
+      projectNameSet: loliotRepository.projectListModel.projectNameSet,
       value: value,
     );
 
@@ -28,6 +28,6 @@ class CreateProjectCubit extends Cubit<CreateProjectState> {
   }
 
   void create(String name) {
-    projectRepository.createProject(name);
+    loliotRepository.createProject(name);
   }
 }

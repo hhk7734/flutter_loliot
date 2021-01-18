@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'authentication/authentication.dart';
 import 'project_list/project_list.dart';
+import 'loliot/loliot.dart';
 import 'sign_in/sign_in.dart';
 import 'splash/splash.dart';
 
@@ -37,11 +38,11 @@ class _AppViewState extends State<AppView> {
             if (snapshot.connectionState == ConnectionState.done) {
               final AuthenticationRepository authenticationRepository =
                   AuthenticationRepository();
-              final ProjectRepository projectRepository = ProjectRepository();
+              final LoliotRepository loliotRepository = LoliotRepository();
               return MultiRepositoryProvider(
                   providers: [
                     RepositoryProvider(create: (_) => authenticationRepository),
-                    RepositoryProvider(create: (_) => projectRepository),
+                    RepositoryProvider(create: (_) => loliotRepository),
                   ],
                   child: BlocProvider(
                     create: (_) => AuthenticationCubit(
@@ -51,7 +52,7 @@ class _AppViewState extends State<AppView> {
                       listener: (_, state) {
                         switch (state.status) {
                           case AuthenticationStatus.authenticated:
-                            projectRepository.init().then(
+                            loliotRepository.init().then(
                                 (value) => _navigator.pushAndRemoveUntil<void>(
                                       ProjectListPage.route(),
                                       (route) => false,

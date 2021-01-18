@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:react_grid_view/react_grid_view.dart';
 
-import '../project_list.dart';
 import '../../authentication/authentication.dart';
 import '../../create_project/create_project.dart';
+import '../../loliot/loliot.dart';
 
 class ProjectListPage extends StatefulWidget {
   @override
@@ -16,18 +16,18 @@ class ProjectListPage extends StatefulWidget {
 }
 
 class _ProjectListPageState extends State<ProjectListPage> {
-  ProjectRepository projectRepository;
+  LoliotRepository loliotRepository;
   ReactGridView reactGridView;
 
   @override
   void initState() {
     super.initState();
-    projectRepository = context.read<ProjectRepository>();
+    loliotRepository = context.read<LoliotRepository>();
     reactGridView = ReactGridView.fromModel(
-      children: projectRepository.projectModelList
+      children: loliotRepository.projectModelList
           .map<ReactPositioned>((e) => e.toAvatar(context))
           .toList(),
-      model: projectRepository.projectListModel.reactGridViewModel,
+      model: loliotRepository.projectListModel.reactGridViewModel,
     );
   }
 
@@ -45,7 +45,7 @@ class _ProjectListPageState extends State<ProjectListPage> {
                   .then((value) {
                 if (value != null && value) {
                   reactGridView.addChild(
-                      child: projectRepository.projectModelList.last
+                      child: loliotRepository.projectModelList.last
                           .toAvatar(context));
                 }
               });

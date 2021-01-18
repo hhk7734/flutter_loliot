@@ -3,14 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 import '../create_project.dart';
-import '../../project_list/project_list.dart';
+import '../../loliot/loliot.dart';
 
 class CreateProjectPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<CreateProjectCubit>(
       create: (context) => CreateProjectCubit(
-          projectRepository: context.read<ProjectRepository>()),
+          loliotRepository: context.read<LoliotRepository>()),
       child: Scaffold(
         appBar: AppBar(
           title: Text("Create Project"),
