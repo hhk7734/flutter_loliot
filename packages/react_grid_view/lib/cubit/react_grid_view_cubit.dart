@@ -173,6 +173,42 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
     if (indexList.length > 0) emit(ReactPositionedUpdateState(indexList));
   }
 
+  void removeChild(int childIndex) {
+    if (_children.keys.contains(childIndex)) {
+      switch (_model.alignment) {
+        case ReactGridViewAlignment.none:
+          _children.remove(childIndex);
+          _sequentialIndexList.remove(childIndex);
+          emit(ReactGridViewUpdateState(
+              _children.entries.map((e) => e.value.toWidget()).toList(),
+              _model));
+          break;
+        case ReactGridViewAlignment.sequential:
+          int startIndex = _sequentialIndexList.indexOf(childIndex);
+
+          _children.remove(childIndex);
+          _sequentialIndexList.remove(childIndex);
+
+          List<int> indexList = _sequentialIndexList.sublist(startIndex);
+
+          for (int i = 0; i < indexList.length; i++) {
+            _children[indexList[i]].model = _children[indexList[i]]
+                .model
+                .copyWith(
+                    crossAxisOffsetCount:
+                        (startIndex + i) % _model.crossAxisCount,
+                    mainAxisOffsetCount:
+                        (startIndex + i) ~/ _model.crossAxisCount);
+          }
+
+          emit(ReactGridViewUpdateState(
+              _children.entries.map((e) => e.value.toWidget()).toList(),
+              _model));
+          break;
+      }
+    }
+  }
+
   void resizedChild(int index, ReactPositionedModel model) {
     List<int> indexList = [];
 

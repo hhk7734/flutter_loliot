@@ -83,4 +83,8 @@ class ReactGridView extends StatelessWidget {
   void addChild({@required ReactPositioned child}) {
     _cubit.addChild(child);
   }
+
+  void removeChild({@required int childIndex}) {
+    _cubit.removeChild(childIndex);
+  }
 }
