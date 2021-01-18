@@ -19,17 +19,24 @@ class ProjectModel {
 
   ReactGridViewModel reactGridViewModel;
 
+  @JsonKey(ignore: true)
+  ReactPositioned reactPositioned;
+
   ReactPositioned toAvatar(BuildContext context) {
-    return ReactPositioned.fromModel(
-      child: Container(
-        color: Colors.grey,
-        child: Center(
-          child: Text("$name"),
+    if (reactPositioned == null)
+      reactPositioned = ReactPositioned.fromModel(
+        child: Container(
+          color: Colors.grey,
+          child: Center(
+            child: Text("$name"),
+          ),
         ),
-      ),
-      model: ReactPositionedModel(),
-      onTapUp: (details) => Navigator.of(context).push(ProjectPage.route(this)),
-    );
+        model: ReactPositionedModel(),
+        onTapUp: (details) =>
+            Navigator.of(context).push(ProjectPage.route(this)),
+      );
+
+    return reactPositioned;
   }
 
   // JsonSerializable
