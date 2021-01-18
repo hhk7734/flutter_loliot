@@ -1,36 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:react_grid_view/react_grid_view.dart';
 
+import '../project_list.dart';
 import '../../authentication/authentication.dart';
-import '../../create_project/create_project.dart';
 import '../../loliot/loliot.dart';
 
-class ProjectListPage extends StatefulWidget {
-  @override
-  _ProjectListPageState createState() => _ProjectListPageState();
-
+class ProjectListPage extends StatelessWidget {
   static Route route() {
     return MaterialPageRoute<void>(builder: (_) => ProjectListPage());
   }
-}
-
-class _ProjectListPageState extends State<ProjectListPage> {
-  LoliotRepository loliotRepository;
-  ReactGridView reactGridView;
 
   @override
-  void initState() {
-    super.initState();
-    loliotRepository = context.read<LoliotRepository>();
-    reactGridView = ReactGridView.fromModel(
-      children: loliotRepository.projectModelList
-          .map<ReactPositioned>((e) => e.toAvatar(context))
-          .toList(),
-      model: loliotRepository.projectListModel.reactGridViewModel,
+  Widget build(BuildContext context) {
+    return BlocProvider<ProjectListCubit>(
+      create: (context) =>
+          ProjectListCubit(loliotRepository: context.read<LoliotRepository>())
+            ..initView(context),
+      child: _ProjectListPage(),
     );
   }
+}
 
+class _ProjectListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,19 +29,10 @@ class _ProjectListPageState extends State<ProjectListPage> {
         title: Text("Project List"),
         actions: [
           IconButton(
-            icon: Icon(Icons.add_box),
-            onPressed: () {
-              Navigator.of(context)
-                  .push<bool>(CreateProjectPage.route())
-                  .then((value) {
-                if (value != null && value) {
-                  reactGridView.addChild(
-                      child: loliotRepository.projectModelList.last
-                          .toAvatar(context));
-                }
-              });
-            },
-          ),
+              icon: Icon(Icons.add_box),
+              onPressed: () {
+                context.read<ProjectListCubit>().createProject(context);
+              }),
           IconButton(
             icon: Icon(Icons.logout),
             onPressed: () {
@@ -61,7 +43,16 @@ class _ProjectListPageState extends State<ProjectListPage> {
           ),
         ],
       ),
-      body: reactGridView,
+      body: BlocBuilder<ProjectListCubit, ProjectListState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case ProjectListStatus.success:
+              return state.reactGridView;
+            default:
+              return const Center(child: CircularProgressIndicator());
+          }
+        },
+      ),
     );
   }
 }
