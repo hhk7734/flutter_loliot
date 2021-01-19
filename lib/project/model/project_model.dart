@@ -42,7 +42,7 @@ class ProjectModel {
         ),
         model: ReactPositionedModel(),
         onTapUp: (details) =>
-            Navigator.of(context).push(ProjectPage.route(this)),
+            Navigator.of(context).push(ProjectPage.route(this.name)),
       );
 
     return reactPositioned;
