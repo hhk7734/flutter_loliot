@@ -12,7 +12,7 @@ class LoliotRepository {
 
   ProjectListModel projectListModel;
 
-  List<ProjectModel> projectModelList;
+  Map<String, ProjectModel> projectModelMap;
 
   Map<int, String> projectNameMap = {};
 
@@ -34,15 +34,17 @@ class LoliotRepository {
       _prefs.setString(kProjectListModelKey, projectListModel.toString());
     }
 
-    projectModelList = projectListModel.projectNameSet
-        .map<ProjectModel>((key) =>
-            ProjectModel.fromString(_prefs.getString(kProjectKeyPrefix + key)))
-        .toList();
+    projectModelMap = Map.fromIterable(
+      projectListModel.projectNameSet,
+      key: (e) => e,
+      value: (e) =>
+          ProjectModel.fromString(_prefs.getString(kProjectKeyPrefix + e)),
+    );
   }
 
   void addProject(ProjectModel projectModel) {
     projectListModel.projectNameSet.add(projectModel.name);
-    projectModelList.add(projectModel);
+    projectModelMap.putIfAbsent(projectModel.name, () => projectModel);
     projectNameMap.putIfAbsent(
         projectModel.reactPositioned.index, () => projectModel.name);
 
@@ -53,9 +55,9 @@ class LoliotRepository {
 
   void projectListRearrange(List<int> indexList) {
     if (!projectNameMap.keys.contains(indexList[0])) {
-      projectModelList.forEach((projectModel) {
+      projectModelMap.forEach((name, projectModel) {
         projectNameMap.putIfAbsent(
-            projectModel.reactPositioned.index, () => projectModel.name);
+            projectModel.reactPositioned.index, () => name);
       });
     }
 
