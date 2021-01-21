@@ -354,7 +354,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousMainAxisCount != mainAxisCount) {
       previousMainAxisCount = mainAxisCount;
-      cubit.resizedChild(
+      cubit.childResizeUpdate(
           index, startModel.copyWith(mainAxisCount: mainAxisCount));
     }
   }
@@ -385,7 +385,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousCrossAxisCount != crossAxisCount) {
       previousCrossAxisCount = crossAxisCount;
-      cubit.resizedChild(
+      cubit.childResizeUpdate(
           index,
           startModel.copyWith(
               crossAxisCount: crossAxisCount,
@@ -416,7 +416,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousCrossAxisCount != crossAxisCount) {
       previousCrossAxisCount = crossAxisCount;
-      cubit.resizedChild(
+      cubit.childResizeUpdate(
           index,
           startModel.copyWith(
             crossAxisCount: crossAxisCount,
@@ -450,7 +450,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousMainAxisCount != mainAxisCount) {
       previousMainAxisCount = mainAxisCount;
-      cubit.resizedChild(
+      cubit.childResizeUpdate(
           index,
           startModel.copyWith(
               mainAxisCount: mainAxisCount,

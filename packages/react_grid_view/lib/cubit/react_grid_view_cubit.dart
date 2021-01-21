@@ -26,7 +26,7 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
   ReactGridViewModel _model;
   ReactGridViewModel get model => _model;
 
-  List<int> _movedIndexList = [];
+  List<int> _changedIndexList = [];
 
   ReactGridViewChildrenMoveEndCallback _onChildrenMoveEnd;
 
@@ -114,26 +114,26 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
   }
 
   void childMoveEnd() {
-    if (_movedIndexList.length > 0) {
-      _movedIndexList.forEach((childIndex) {
+    if (_changedIndexList.length > 0) {
+      _changedIndexList.forEach((childIndex) {
         ReactPositioned reactPositioned = _children[childIndex];
         if (reactPositioned.onModelChangeEnd != null)
           reactPositioned.onModelChangeEnd(
               reactPositioned.index, reactPositioned.model);
       });
 
-      if (_onChildrenMoveEnd != null) _onChildrenMoveEnd(_movedIndexList);
+      if (_onChildrenMoveEnd != null) _onChildrenMoveEnd(_changedIndexList);
     }
   }
 
   void childMoveUpdated(int childIndex, ReactPositionedModel model) {
-    _movedIndexList.clear();
+    _changedIndexList.clear();
 
     switch (_model.alignment) {
       case ReactGridViewAlignment.none:
         if (_checkOverlap(childIndex, model)) return;
         _children[childIndex].model = model;
-        _movedIndexList.add(childIndex);
+        _changedIndexList.add(childIndex);
         break;
 
       case ReactGridViewAlignment.sequential:
@@ -171,12 +171,11 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
           _sequentialIndexList.add(childIndex);
         }
 
-        _movedIndexList = _sequentialIndexList.sublist(startIndex);
+        _changedIndexList = _sequentialIndexList.sublist(startIndex);
 
-        for (int i = 0; i < _movedIndexList.length; i++) {
-          _children[_movedIndexList[i]].model = _children[_movedIndexList[i]]
-              .model
-              .copyWith(
+        for (int i = 0; i < _changedIndexList.length; i++) {
+          _children[_changedIndexList[i]].model =
+              _children[_changedIndexList[i]].model.copyWith(
                   crossAxisOffsetCount:
                       (startIndex + i) % _model.crossAxisCount,
                   mainAxisOffsetCount:
@@ -185,9 +184,27 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
         break;
     }
 
-    if (_movedIndexList.length > 0) {
-      emit(ReactPositionedUpdateState(_movedIndexList));
+    if (_changedIndexList.length > 0) {
+      emit(ReactPositionedUpdateState(_changedIndexList));
     }
+  }
+
+  void childResizeUpdate(int index, ReactPositionedModel model) {
+    _changedIndexList.clear();
+
+    switch (_model.alignment) {
+      case ReactGridViewAlignment.none:
+        if (_checkOverlap(index, model)) return;
+        _children[index].model = model;
+        _changedIndexList.add(index);
+        break;
+
+      case ReactGridViewAlignment.sequential:
+        break;
+    }
+
+    if (_changedIndexList.length > 0)
+      emit(ReactPositionedUpdateState(_changedIndexList));
   }
 
   void closeResizableOverlay() {
@@ -233,22 +250,5 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
           break;
       }
     }
-  }
-
-  void resizedChild(int index, ReactPositionedModel model) {
-    List<int> indexList = [];
-
-    switch (_model.alignment) {
-      case ReactGridViewAlignment.none:
-        if (_checkOverlap(index, model)) return;
-        _children[index].model = model;
-        indexList.add(index);
-        break;
-
-      case ReactGridViewAlignment.sequential:
-        break;
-    }
-
-    if (indexList.length > 0) emit(ReactPositionedUpdateState(indexList));
   }
 }
