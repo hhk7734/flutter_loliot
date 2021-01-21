@@ -34,15 +34,17 @@ class ProjectModel {
   ReactPositioned toAvatar(BuildContext context) {
     if (reactPositioned == null)
       reactPositioned = ReactPositioned.fromModel(
-        child: Container(
-          color: Colors.grey,
-          child: Center(
-            child: Text("$name"),
+        child: GestureDetector(
+          child: Container(
+            color: Colors.grey,
+            child: Center(
+              child: Text("$name"),
+            ),
           ),
+          onTapUp: (details) =>
+              Navigator.of(context).push(ProjectPage.route(this.name)),
         ),
         model: ReactPositionedModel(),
-        onTapUp: (details) =>
-            Navigator.of(context).push(ProjectPage.route(this.name)),
       );
 
     return reactPositioned;

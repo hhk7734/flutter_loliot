@@ -29,7 +29,6 @@ class ReactPositioned {
     bool movable = true,
     this.onModelChangeEnd,
     this.onIndexChange,
-    this.onTapUp,
     bool verticalResizable = true,
   })  : this.key = key ?? UniqueKey(),
         this.model = ReactPositionedModel(
@@ -52,7 +51,6 @@ class ReactPositioned {
     this.model,
     this.onModelChangeEnd,
     this.onIndexChange,
-    this.onTapUp,
   }) : this.key = key ?? UniqueKey();
 
   final Widget child;
@@ -73,8 +71,6 @@ class ReactPositioned {
   final ReactPositionedModelChangeEndCallback onModelChangeEnd;
 
   final ReactPositionedIndexChangeCallback onIndexChange;
-
-  final GestureTapUpCallback onTapUp;
 
   _ReactPositioned toWidget() => _ReactPositioned(
         reactPositioned: this,
@@ -133,45 +129,42 @@ class _ReactPositionedState extends State<_ReactPositioned> {
         return Positioned(
           left: left,
           top: top,
-          child: GestureDetector(
-            child: model.movable
-                ? LongPressDraggable(
-                    child: Container(
-                      child: child,
-                      height: heightWithoutMargin,
-                      margin: margin,
-                      width: widthWithoutMargin,
-                    ),
-                    childWhenDragging: Container(
-                      color: Color.fromRGBO(0, 100, 0, 0.2),
-                      height: heightWithoutMargin,
-                      margin: margin,
-                      width: widthWithoutMargin,
-                    ),
-                    feedback: Material(
-                      color: Colors.transparent,
-                      child: Container(
-                        child: Transform.scale(
-                          child: child,
-                          scale: 1.05,
-                        ),
-                        height: heightWithoutMargin,
-                        margin: margin,
-                        width: widthWithoutMargin,
-                      ),
-                    ),
-                    onDragEnd: onDragEndCallback,
-                    onDragStarted: onDragStartedCallback,
-                    onDragUpdate: onDragUpdateCallback,
-                  )
-                : Container(
+          child: model.movable
+              ? LongPressDraggable(
+                  child: Container(
                     child: child,
                     height: heightWithoutMargin,
                     margin: margin,
                     width: widthWithoutMargin,
                   ),
-            onTapUp: widget.reactPositioned.onTapUp,
-          ),
+                  childWhenDragging: Container(
+                    color: Color.fromRGBO(0, 100, 0, 0.2),
+                    height: heightWithoutMargin,
+                    margin: margin,
+                    width: widthWithoutMargin,
+                  ),
+                  feedback: Material(
+                    color: Colors.transparent,
+                    child: Container(
+                      child: Transform.scale(
+                        child: child,
+                        scale: 1.05,
+                      ),
+                      height: heightWithoutMargin,
+                      margin: margin,
+                      width: widthWithoutMargin,
+                    ),
+                  ),
+                  onDragEnd: onDragEndCallback,
+                  onDragStarted: onDragStartedCallback,
+                  onDragUpdate: onDragUpdateCallback,
+                )
+              : Container(
+                  child: child,
+                  height: heightWithoutMargin,
+                  margin: margin,
+                  width: widthWithoutMargin,
+                ),
         );
       },
       listenWhen: (previous, current) {
