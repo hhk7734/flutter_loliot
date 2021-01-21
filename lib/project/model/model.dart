@@ -1,2 +1,2 @@
-export 'project_item.dart';
+export 'project_item_model.dart';
 export 'project_model.dart';

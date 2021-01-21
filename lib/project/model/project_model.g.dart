@@ -9,9 +9,10 @@ part of 'project_model.dart';
 ProjectModel _$ProjectModelFromJson(Map<String, dynamic> json) {
   return ProjectModel(
     name: json['name'] as String,
-    projectItemList: (json['projectItemList'] as List)
-        ?.map((e) =>
-            e == null ? null : ProjectItem.fromJson(e as Map<String, dynamic>))
+    projectItemModelList: (json['projectItemModelList'] as List)
+        ?.map((e) => e == null
+            ? null
+            : ProjectItemModel.fromJson(e as Map<String, dynamic>))
         ?.toList(),
     reactGridViewModel: json['reactGridViewModel'] == null
         ? null
@@ -23,7 +24,7 @@ ProjectModel _$ProjectModelFromJson(Map<String, dynamic> json) {
 Map<String, dynamic> _$ProjectModelToJson(ProjectModel instance) =>
     <String, dynamic>{
       'name': instance.name,
-      'projectItemList':
-          instance.projectItemList?.map((e) => e?.toJson())?.toList(),
+      'projectItemModelList':
+          instance.projectItemModelList?.map((e) => e?.toJson())?.toList(),
       'reactGridViewModel': instance.reactGridViewModel?.toJson(),
     };

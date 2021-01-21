@@ -1,13 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'project_item.dart';
+part of 'project_item_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-ProjectItem _$ProjectItemFromJson(Map<String, dynamic> json) {
-  return ProjectItem(
+ProjectItemModel _$ProjectItemModelFromJson(Map<String, dynamic> json) {
+  return ProjectItemModel(
     reactPositionedModel: json['reactPositionedModel'] == null
         ? null
         : ReactPositionedModel.fromJson(
@@ -15,7 +15,7 @@ ProjectItem _$ProjectItemFromJson(Map<String, dynamic> json) {
   );
 }
 
-Map<String, dynamic> _$ProjectItemToJson(ProjectItem instance) =>
+Map<String, dynamic> _$ProjectItemModelToJson(ProjectItemModel instance) =>
     <String, dynamic>{
       'reactPositionedModel': instance.reactPositionedModel?.toJson(),
     };

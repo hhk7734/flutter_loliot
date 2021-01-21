@@ -22,7 +22,7 @@ class ProjectCubit extends Cubit<ProjectState> {
   void initView() {
     ProjectModel model = _loliotRepository.projectModelMap[name];
     _reactGridView = ReactGridView.fromModel(
-      children: model.projectItemList
+      children: model.projectItemModelList
           .map<ReactPositioned>((e) => e.toWidget())
           .toList(),
       model: _loliotRepository.projectModelMap[name].reactGridViewModel,

@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:react_grid_view/react_grid_view.dart';
 
-part 'project_item.g.dart';
+part 'project_item_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class ProjectItem {
-  ProjectItem({
+class ProjectItemModel {
+  ProjectItemModel({
     this.reactPositionedModel,
   });
 
@@ -29,8 +29,8 @@ class ProjectItem {
 
   // JsonSerializable
 
-  factory ProjectItem.fromJson(Map<String, dynamic> json) =>
-      _$ProjectItemFromJson(json);
+  factory ProjectItemModel.fromJson(Map<String, dynamic> json) =>
+      _$ProjectItemModelFromJson(json);
 
-  Map<String, dynamic> toJson() => _$ProjectItemToJson(this);
+  Map<String, dynamic> toJson() => _$ProjectItemModelToJson(this);
 }
