@@ -7,6 +7,9 @@ import '../react_grid_view.dart';
 part 'resizable_overlay.dart';
 part 'resize_gesture_detector.dart';
 
+typedef ReactPositionedModelUpdateCallback = void Function(
+    int index, ReactPositionedModel model);
+
 class ReactPositioned {
   ReactPositioned({
     Key key,
@@ -21,10 +24,11 @@ class ReactPositioned {
     int minCrossAxisCount,
     int minMainAxisCount,
     bool movable = true,
+    this.onModelUpdate,
     this.onTapUp,
     bool verticalResizable = true,
   })  : this.key = key ?? UniqueKey(),
-        model = ReactPositionedModel(
+        _model = ReactPositionedModel(
           crossAxisCount: crossAxisCount,
           crossAxisOffsetCount: crossAxisOffsetCount,
           horizontalResizable: horizontalResizable,
@@ -41,9 +45,11 @@ class ReactPositioned {
   ReactPositioned.fromModel({
     Key key,
     this.child,
-    this.model,
+    ReactPositionedModel model,
+    this.onModelUpdate,
     this.onTapUp,
-  }) : this.key = key ?? UniqueKey();
+  })  : this.key = key ?? UniqueKey(),
+        _model = model;
 
   final Widget child;
 
@@ -53,7 +59,14 @@ class ReactPositioned {
 
   final Key key;
 
-  ReactPositionedModel model;
+  ReactPositionedModel _model;
+  ReactPositionedModel get model => _model;
+  set model(ReactPositionedModel model) {
+    _model = model;
+    if (onModelUpdate != null) onModelUpdate(index, _model);
+  }
+
+  final ReactPositionedModelUpdateCallback onModelUpdate;
 
   final GestureTapUpCallback onTapUp;
 

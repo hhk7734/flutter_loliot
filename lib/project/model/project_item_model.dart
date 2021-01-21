@@ -47,6 +47,7 @@ class ProjectItemModel {
           color: Colors.grey,
         ),
         model: reactPositionedModel,
+        onModelUpdate: (index, model) => reactPositionedModel = model,
       );
 
     return reactPositioned;
