@@ -304,6 +304,8 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
   void resizeOnPanDownCenterCallback(DragDownDetails details) {
     if (resizable && overlay != null) {
+      cubit.childResizeEnd();
+
       overlay.close();
       overlay = null;
     }

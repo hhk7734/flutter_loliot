@@ -15,6 +15,7 @@ class ReactGridView extends StatelessWidget {
     @required int mainAxisCount,
     double mainAxisSpacing = 10,
     ReactGridViewChildrenMoveEndCallback onChildrenMoveEnd,
+    ReactGridViewChildResizeEndCallback onChildResizeEnd,
   })  : _cubit = ReactGridViewCubit(
           children: children,
           model: ReactGridViewModel(
@@ -27,6 +28,7 @@ class ReactGridView extends StatelessWidget {
             mainAxisSpacing: mainAxisSpacing,
           ),
           onChildrenMoveEnd: onChildrenMoveEnd,
+          onChildResizeEnd: onChildResizeEnd,
         ),
         super(key: key);
 
@@ -35,10 +37,12 @@ class ReactGridView extends StatelessWidget {
     List<ReactPositioned> children,
     ReactGridViewModel model,
     ReactGridViewChildrenMoveEndCallback onChildrenMoveEnd,
+    ReactGridViewChildResizeEndCallback onChildResizeEnd,
   })  : _cubit = ReactGridViewCubit(
           children: children,
           model: model,
           onChildrenMoveEnd: onChildrenMoveEnd,
+          onChildResizeEnd: onChildResizeEnd,
         ),
         super(key: key);
 

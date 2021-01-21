@@ -9,13 +9,18 @@ part 'react_grid_view_state.dart';
 typedef ReactGridViewChildrenMoveEndCallback = void Function(
     List<int> indexList);
 
+typedef ReactGridViewChildResizeEndCallback = void Function(
+    List<int> indexList);
+
 class ReactGridViewCubit extends Cubit<ReactGridViewState> {
   ReactGridViewCubit({
     List<ReactPositioned> children,
     ReactGridViewModel model,
     ReactGridViewChildrenMoveEndCallback onChildrenMoveEnd,
+    ReactGridViewChildResizeEndCallback onChildResizeEnd,
   })  : _model = model,
         _onChildrenMoveEnd = onChildrenMoveEnd,
+        _onChildResizeEnd = onChildResizeEnd,
         super(ReactGridViewInitial()) {
     if (children != null) children.forEach((e) => _addChild(e));
   }
@@ -28,7 +33,9 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
 
   List<int> _changedIndexList = [];
 
-  ReactGridViewChildrenMoveEndCallback _onChildrenMoveEnd;
+  final ReactGridViewChildrenMoveEndCallback _onChildrenMoveEnd;
+
+  final ReactGridViewChildResizeEndCallback _onChildResizeEnd;
 
   final List<int> _sequentialIndexList = <int>[];
 
@@ -186,6 +193,19 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
 
     if (_changedIndexList.length > 0) {
       emit(ReactPositionedUpdateState(_changedIndexList));
+    }
+  }
+
+  void childResizeEnd() {
+    if (_changedIndexList.length > 0) {
+      _changedIndexList.forEach((childIndex) {
+        ReactPositioned reactPositioned = _children[childIndex];
+        if (reactPositioned.onModelChangeEnd != null)
+          reactPositioned.onModelChangeEnd(
+              reactPositioned.index, reactPositioned.model);
+      });
+
+      if (_onChildResizeEnd != null) _onChildResizeEnd(_changedIndexList);
     }
   }
 
