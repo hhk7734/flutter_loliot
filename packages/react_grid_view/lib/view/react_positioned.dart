@@ -7,7 +7,7 @@ import '../react_grid_view.dart';
 part 'resizable_overlay.dart';
 part 'resize_gesture_detector.dart';
 
-typedef ReactPositionedModelUpdateCallback = void Function(
+typedef ReactPositionedModelChangeEndCallback = void Function(
     int index, ReactPositionedModel model);
 
 class ReactPositioned {
@@ -24,11 +24,11 @@ class ReactPositioned {
     int minCrossAxisCount,
     int minMainAxisCount,
     bool movable = true,
-    this.onModelUpdate,
+    this.onModelChangeEnd,
     this.onTapUp,
     bool verticalResizable = true,
   })  : this.key = key ?? UniqueKey(),
-        _model = ReactPositionedModel(
+        this.model = ReactPositionedModel(
           crossAxisCount: crossAxisCount,
           crossAxisOffsetCount: crossAxisOffsetCount,
           horizontalResizable: horizontalResizable,
@@ -45,11 +45,10 @@ class ReactPositioned {
   ReactPositioned.fromModel({
     Key key,
     this.child,
-    ReactPositionedModel model,
-    this.onModelUpdate,
+    this.model,
+    this.onModelChangeEnd,
     this.onTapUp,
-  })  : this.key = key ?? UniqueKey(),
-        _model = model;
+  }) : this.key = key ?? UniqueKey();
 
   final Widget child;
 
@@ -59,23 +58,14 @@ class ReactPositioned {
 
   final Key key;
 
-  ReactPositionedModel _model;
-  ReactPositionedModel get model => _model;
-  set model(ReactPositionedModel model) {
-    _model = model;
-    if (onModelUpdate != null) onModelUpdate(index, _model);
-  }
+  ReactPositionedModel model;
 
-  final ReactPositionedModelUpdateCallback onModelUpdate;
+  final ReactPositionedModelChangeEndCallback onModelChangeEnd;
 
   final GestureTapUpCallback onTapUp;
 
   _ReactPositioned toWidget() => _ReactPositioned(
-        key: key,
-        child: child,
-        cubit: cubit,
-        index: index,
-        onTapUp: onTapUp,
+        reactPositioned: this,
       );
 
   void removeSelf() {
@@ -84,21 +74,9 @@ class ReactPositioned {
 }
 
 class _ReactPositioned extends StatefulWidget {
-  _ReactPositioned({
-    Key key,
-    this.child,
-    this.cubit,
-    this.index,
-    this.onTapUp,
-  }) : super(key: key);
+  _ReactPositioned({this.reactPositioned}) : super(key: reactPositioned.key);
 
-  final Widget child;
-
-  final ReactGridViewCubit cubit;
-
-  final int index;
-
-  final GestureTapUpCallback onTapUp;
+  final ReactPositioned reactPositioned;
 
   @override
   _ReactPositionedState createState() => _ReactPositionedState();
@@ -126,19 +104,19 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
   @override
   Widget build(BuildContext context) {
-    reactGridViewModel = widget.cubit.model;
+    reactGridViewModel = cubit.model;
     return BlocConsumer<ReactGridViewCubit, ReactGridViewState>(
-      cubit: widget.cubit,
+      cubit: cubit,
       buildWhen: (previous, current) {
         if (current is ReactPositionedUpdateState) {
-          if (current.indexList.contains(widget.index)) {
+          if (current.indexList.contains(index)) {
             return true;
           }
         }
         return false;
       },
       builder: (context, state) {
-        model = widget.cubit.children[widget.index].model;
+        model = cubit.children[index].model;
 
         return Positioned(
           left: left,
@@ -147,7 +125,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
             child: model.movable
                 ? LongPressDraggable(
                     child: Container(
-                      child: widget.child,
+                      child: child,
                       height: heightWithoutMargin,
                       margin: margin,
                       width: widthWithoutMargin,
@@ -162,7 +140,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
                       color: Colors.transparent,
                       child: Container(
                         child: Transform.scale(
-                          child: widget.child,
+                          child: child,
                           scale: 1.05,
                         ),
                         height: heightWithoutMargin,
@@ -175,12 +153,12 @@ class _ReactPositionedState extends State<_ReactPositioned> {
                     onDragUpdate: onDragUpdateCallback,
                   )
                 : Container(
-                    child: widget.child,
+                    child: child,
                     height: heightWithoutMargin,
                     margin: margin,
                     width: widthWithoutMargin,
                   ),
-            onTapUp: widget.onTapUp,
+            onTapUp: widget.reactPositioned.onTapUp,
           ),
         );
       },
@@ -197,15 +175,21 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
   // get
 
+  Widget get child => widget.reactPositioned.child;
+
   double get crossAxisOverflow => reactGridViewModel.crossAxisSpacing >
           reactGridViewModel.clickableWidth
       ? 0
       : reactGridViewModel.clickableWidth - reactGridViewModel.crossAxisSpacing;
 
+  ReactGridViewCubit get cubit => widget.reactPositioned.cubit;
+
   double get height =>
       model.mainAxisCount * reactGridViewModel.mainAxisStride +
       mainAxisOverflow;
   double get heightWithoutMargin => height - margin.vertical;
+
+  int get index => widget.reactPositioned.index;
 
   double get left =>
       model.crossAxisOffsetCount * reactGridViewModel.crossAxisStride -
@@ -279,18 +263,18 @@ class _ReactPositionedState extends State<_ReactPositioned> {
         previousMainAxisOffsetCount != mainAxisOffsetCount) {
       previousCrossAxisOffsetCount = crossAxisOffsetCount;
       previousMainAxisOffsetCount = mainAxisOffsetCount;
-      widget.cubit.childMoveUpdated(
-          widget.index,
+      cubit.childMoveUpdated(
+          index,
           model.copyWith(
               crossAxisOffsetCount: crossAxisOffsetCount,
               mainAxisOffsetCount: mainAxisOffsetCount));
     }
   }
 
-  // resize
+  // move end + resize
 
   void onDragEndCallback(DraggableDetails details) {
-    widget.cubit.childMoveEnded();
+    cubit.childMoveEnded();
 
     if (resizable && overlay == null) {
       final RenderBox box = context.findRenderObject() as RenderBox;
@@ -315,6 +299,8 @@ class _ReactPositionedState extends State<_ReactPositioned> {
       );
     }
   }
+
+  // resize
 
   void resizeOnPanDownCenterCallback(DragDownDetails details) {
     if (resizable && overlay != null) {
@@ -368,8 +354,8 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousMainAxisCount != mainAxisCount) {
       previousMainAxisCount = mainAxisCount;
-      widget.cubit.resizedChild(
-          widget.index, startModel.copyWith(mainAxisCount: mainAxisCount));
+      cubit.resizedChild(
+          index, startModel.copyWith(mainAxisCount: mainAxisCount));
     }
   }
 
@@ -399,8 +385,8 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousCrossAxisCount != crossAxisCount) {
       previousCrossAxisCount = crossAxisCount;
-      widget.cubit.resizedChild(
-          widget.index,
+      cubit.resizedChild(
+          index,
           startModel.copyWith(
               crossAxisCount: crossAxisCount,
               crossAxisOffsetCount: crossAxisOffsetCount));
@@ -430,8 +416,8 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousCrossAxisCount != crossAxisCount) {
       previousCrossAxisCount = crossAxisCount;
-      widget.cubit.resizedChild(
-          widget.index,
+      cubit.resizedChild(
+          index,
           startModel.copyWith(
             crossAxisCount: crossAxisCount,
           ));
@@ -464,8 +450,8 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
     if (previousMainAxisCount != mainAxisCount) {
       previousMainAxisCount = mainAxisCount;
-      widget.cubit.resizedChild(
-          widget.index,
+      cubit.resizedChild(
+          index,
           startModel.copyWith(
               mainAxisCount: mainAxisCount,
               mainAxisOffsetCount: mainAxisOffsetCount));
