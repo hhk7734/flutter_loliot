@@ -274,7 +274,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
   // move end + resize
 
   void onDragEndCallback(DraggableDetails details) {
-    cubit.childMoveEnded();
+    cubit.childMoveEnd();
 
     if (resizable && overlay == null) {
       final RenderBox box = context.findRenderObject() as RenderBox;

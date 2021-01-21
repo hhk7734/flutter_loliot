@@ -25,7 +25,7 @@ class ProjectListCubit extends Cubit<ProjectListState> {
           .map<ReactPositioned>((e) => e.value.toAvatar(context))
           .toList(),
       model: _loliotRepository.projectListModel.reactGridViewModel,
-      onChildrenMove: _loliotRepository.projectListRearrange,
+      onChildrenMoveEnd: _loliotRepository.projectListRearrange,
     );
     emit(ProjectListState.success(_reactGridView));
   }
