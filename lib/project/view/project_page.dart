@@ -28,13 +28,18 @@ class ProjectPage extends StatelessWidget {
   }
 }
 
-class _ProjectPage extends StatelessWidget {
+class _ProjectPage extends StatefulWidget {
   _ProjectPage({
     @required this.name,
   });
 
   final String name;
 
+  @override
+  _ProjectPageState createState() => _ProjectPageState();
+}
+
+class _ProjectPageState extends State<_ProjectPage> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ProjectCubit, ProjectState>(
@@ -43,7 +48,7 @@ class _ProjectPage extends StatelessWidget {
           case ProjectStatus.success:
             return Scaffold(
               appBar: AppBar(
-                title: Text(name),
+                title: Text(widget.name),
                 leading: IconButton(
                   icon: Icon(Icons.arrow_back_ios),
                   onPressed: () => Navigator.of(context).pop(),
@@ -72,10 +77,16 @@ class _ProjectPage extends StatelessWidget {
   Widget _buildDrawer() {
     return ListView(
       children: [
-        Container(
-          height: 50,
-          color: Colors.amber[600],
-          child: const Center(child: Text("Button")),
+        RaisedButton(
+          child: Container(
+            child: Text("Button"),
+          ),
+          onPressed: () {
+            context
+                .read<ProjectCubit>()
+                .addProjectItem(ProjectItemModel.button());
+            Navigator.of(context).pop();
+          },
         )
       ],
     );
