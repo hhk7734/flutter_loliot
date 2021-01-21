@@ -72,7 +72,8 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
     if (_checkOverlap(-1, child.model)) return false;
     if (_model.checkOverflow(child.model)) return false;
 
-    child.onModelChangeEnd(child.index, child.model);
+    if (child.onModelChangeEnd != null)
+      child.onModelChangeEnd(child.index, child.model);
 
     _children.putIfAbsent(index, () => child);
     _sequentialIndexList.add(index);
