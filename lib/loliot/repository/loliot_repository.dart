@@ -60,6 +60,11 @@ class LoliotRepository {
         projectModelMap[projectName].toString());
   }
 
+  void moveProjectItem(String projectName) {
+    _prefs.setString(kProjectKeyPrefix + projectName,
+        projectModelMap[projectName].toString());
+  }
+
   void projectListRearrange(List<int> indexList) {
     if (!projectNameMap.keys.contains(indexList[0])) {
       projectModelMap.forEach((name, projectModel) {
