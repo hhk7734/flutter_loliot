@@ -8,7 +8,7 @@ class _ResizableOverlay {
     this.left,
     this.margin,
     this.onPanDown,
-    this.onPanDownCenter,
+    this.onPanDownClose,
     this.onPanEnd,
     this.onPanUpdateBottom,
     this.onPanUpdateLeft,
@@ -29,7 +29,7 @@ class _ResizableOverlay {
   double left;
   final EdgeInsets margin;
   final GestureDragDownCallback onPanDown;
-  final GestureDragDownCallback onPanDownCenter;
+  final GestureDragDownCallback onPanDownClose;
   final GestureDragEndCallback onPanEnd;
   final GestureDragUpdateCallback onPanUpdateBottom;
   final GestureDragUpdateCallback onPanUpdateLeft;
@@ -42,67 +42,79 @@ class _ResizableOverlay {
   double width;
 
   Widget build(BuildContext context) {
-    return Positioned(
-      child: Container(
-        child: Stack(
-          children: [
-            GestureDetector(
-              child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.green, width: 2),
-                  color: Colors.transparent,
-                ),
-                margin: margin,
-              ),
-              onPanDown: onPanDownCenter,
+    return Stack(
+      children: [
+        Positioned(
+          child: GestureDetector(
+            child: Container(
+              color: Colors.transparent,
             ),
-            if (horizontalResizable)
-              _ResizePoint(
-                height: clickableWidth * 2,
-                width: clickableWidth,
-                left: margin.left - clickableWidth / 2,
-                top: height / 2 - clickableWidth,
-                onPanDown: onPanDown,
-                onPanEnd: onPanEnd,
-                onPanUpdate: onPanUpdateLeft,
-              ),
-            if (horizontalResizable)
-              _ResizePoint(
-                height: clickableWidth * 2,
-                width: clickableWidth,
-                left: width - margin.right - clickableWidth / 2,
-                top: height / 2 - clickableWidth,
-                onPanDown: onPanDown,
-                onPanEnd: onPanEnd,
-                onPanUpdate: onPanUpdateRight,
-              ),
-            if (verticalResizable)
-              _ResizePoint(
-                height: clickableWidth,
-                width: clickableWidth * 2,
-                left: width / 2 - clickableWidth,
-                top: margin.top - clickableWidth / 2,
-                onPanDown: onPanDown,
-                onPanEnd: onPanEnd,
-                onPanUpdate: onPanUpdateTop,
-              ),
-            if (verticalResizable)
-              _ResizePoint(
-                height: clickableWidth,
-                width: clickableWidth * 2,
-                left: width / 2 - clickableWidth,
-                top: height - margin.bottom - clickableWidth / 2,
-                onPanDown: onPanDown,
-                onPanEnd: onPanEnd,
-                onPanUpdate: onPanUpdateBottom,
-              )
-          ],
+            onPanDown: onPanDownClose,
+          ),
         ),
-        height: height,
-        width: width,
-      ),
-      left: left,
-      top: top,
+        Positioned(
+          child: Container(
+            child: Stack(
+              children: [
+                GestureDetector(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.green, width: 2),
+                      color: Colors.transparent,
+                    ),
+                    margin: margin,
+                  ),
+                  onPanDown: onPanDownClose,
+                ),
+                if (horizontalResizable)
+                  _ResizePoint(
+                    height: clickableWidth * 2,
+                    width: clickableWidth,
+                    left: margin.left - clickableWidth / 2,
+                    top: height / 2 - clickableWidth,
+                    onPanDown: onPanDown,
+                    onPanEnd: onPanEnd,
+                    onPanUpdate: onPanUpdateLeft,
+                  ),
+                if (horizontalResizable)
+                  _ResizePoint(
+                    height: clickableWidth * 2,
+                    width: clickableWidth,
+                    left: width - margin.right - clickableWidth / 2,
+                    top: height / 2 - clickableWidth,
+                    onPanDown: onPanDown,
+                    onPanEnd: onPanEnd,
+                    onPanUpdate: onPanUpdateRight,
+                  ),
+                if (verticalResizable)
+                  _ResizePoint(
+                    height: clickableWidth,
+                    width: clickableWidth * 2,
+                    left: width / 2 - clickableWidth,
+                    top: margin.top - clickableWidth / 2,
+                    onPanDown: onPanDown,
+                    onPanEnd: onPanEnd,
+                    onPanUpdate: onPanUpdateTop,
+                  ),
+                if (verticalResizable)
+                  _ResizePoint(
+                    height: clickableWidth,
+                    width: clickableWidth * 2,
+                    left: width / 2 - clickableWidth,
+                    top: height - margin.bottom - clickableWidth / 2,
+                    onPanDown: onPanDown,
+                    onPanEnd: onPanEnd,
+                    onPanUpdate: onPanUpdateBottom,
+                  )
+              ],
+            ),
+            height: height,
+            width: width,
+          ),
+          left: left,
+          top: top,
+        ),
+      ],
     );
   }
 

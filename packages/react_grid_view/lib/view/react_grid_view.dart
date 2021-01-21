@@ -71,13 +71,10 @@ class ReactGridView extends StatelessWidget {
                   double height = constraints.maxHeight > state.model.height
                       ? constraints.maxHeight
                       : state.model.height;
-                  return GestureDetector(
-                    child: Container(
-                      color: Colors.transparent,
-                      height: height,
-                      child: Stack(children: state.children),
-                    ),
-                    onPanDown: (_) => _cubit.closeResizableOverlay(),
+                  return Container(
+                    color: Colors.transparent,
+                    height: height,
+                    child: Stack(children: state.children),
                   );
                 }
                 return Container(

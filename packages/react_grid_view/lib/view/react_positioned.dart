@@ -175,13 +175,9 @@ class _ReactPositionedState extends State<_ReactPositioned> {
         );
       },
       listenWhen: (previous, current) {
-        if (current is ReactPositionedCloseOvelayState) return true;
         return false;
       },
-      listener: (context, state) {
-        if (state is ReactPositionedCloseOvelayState)
-          resizeOnPanDownCenterCallback(null);
-      },
+      listener: (context, state) {},
     );
   }
 
@@ -300,7 +296,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
         left: globalOffset.dx,
         top: globalOffset.dy,
         onPanDown: resizeOnPanDownCallback,
-        onPanDownCenter: resizeOnPanDownCenterCallback,
+        onPanDownClose: resizeOnPanDownCloseCallback,
         onPanEnd: resizeOnPanEndCallback,
         onPanUpdateBottom: resizeOnPanUpdateBottomCallback,
         onPanUpdateLeft: resizeOnPanUpdateLeftCallback,
@@ -314,7 +310,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
 
   // resize
 
-  void resizeOnPanDownCenterCallback(DragDownDetails details) {
+  void resizeOnPanDownCloseCallback(DragDownDetails details) {
     if (resizable && overlay != null) {
       cubit.childResizeEnd();
 
