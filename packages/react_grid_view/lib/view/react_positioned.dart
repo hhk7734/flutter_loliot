@@ -10,6 +10,9 @@ part 'resize_gesture_detector.dart';
 typedef ReactPositionedModelChangeEndCallback = void Function(
     int index, ReactPositionedModel model);
 
+typedef ReactPositionedIndexChangeCallback = void Function(
+    int previous, int current);
+
 class ReactPositioned {
   ReactPositioned({
     Key key,
@@ -25,6 +28,7 @@ class ReactPositioned {
     int minMainAxisCount,
     bool movable = true,
     this.onModelChangeEnd,
+    this.onIndexChange,
     this.onTapUp,
     bool verticalResizable = true,
   })  : this.key = key ?? UniqueKey(),
@@ -47,6 +51,7 @@ class ReactPositioned {
     this.child,
     this.model,
     this.onModelChangeEnd,
+    this.onIndexChange,
     this.onTapUp,
   }) : this.key = key ?? UniqueKey();
 
@@ -54,13 +59,20 @@ class ReactPositioned {
 
   ReactGridViewCubit cubit;
 
-  int index;
+  int _index;
+  int get index => _index;
+  set index(int index) {
+    if (onIndexChange != null) onIndexChange(_index, index);
+    _index = index;
+  }
 
   final Key key;
 
   ReactPositionedModel model;
 
   final ReactPositionedModelChangeEndCallback onModelChangeEnd;
+
+  final ReactPositionedIndexChangeCallback onIndexChange;
 
   final GestureTapUpCallback onTapUp;
 
