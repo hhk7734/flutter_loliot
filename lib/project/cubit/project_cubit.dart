@@ -22,17 +22,19 @@ class ProjectCubit extends Cubit<ProjectState> {
   void initView() {
     ProjectModel model = _loliotRepository.projectModelMap[name];
     _reactGridView = ReactGridView.fromModel(
-      children: model.projectItemModelList
-          .map<ReactPositioned>((e) => e.toWidget())
-          .toList(),
+      children: model.projectItemModelList.map<ReactPositioned>((e) {
+        e.cubit = this;
+        return e.toWidget();
+      }).toList(),
       model: _loliotRepository.projectModelMap[name].reactGridViewModel,
       onChildrenMoveEnd: _onChildrenMoveEndCallback,
       onChildResizeEnd: _onChildResizeEndCallback,
     );
-    emit(ProjectState.success(_reactGridView));
+    emit(ProjectState.success(false, _reactGridView));
   }
 
   void addProjectItem(ProjectItemModel projectItemModel) {
+    projectItemModel.cubit = this;
     _reactGridView.addChild(child: projectItemModel.toWidget());
     _loliotRepository.addProjectItem(name, projectItemModel);
   }
@@ -43,5 +45,10 @@ class ProjectCubit extends Cubit<ProjectState> {
 
   void _onChildResizeEndCallback(List<int> indexList) {
     _loliotRepository.saveProjectModel(name);
+  }
+
+  void setActivate(bool activate) {
+    _reactGridView.setEditable(editable: !activate);
+    emit(ProjectState.success(activate, _reactGridView));
   }
 }

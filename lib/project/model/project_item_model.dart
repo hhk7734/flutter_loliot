@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:react_grid_view/react_grid_view.dart';
+
+import '../project.dart';
 
 part 'project_item_model.g.dart';
 
@@ -33,6 +36,9 @@ class ProjectItemModel {
         ),
       );
 
+  @JsonKey(ignore: true)
+  ProjectCubit cubit;
+
   final ProjectItemType projectItemType;
 
   ReactPositionedModel reactPositionedModel;
@@ -40,12 +46,38 @@ class ProjectItemModel {
   @JsonKey(ignore: true)
   ReactPositioned reactPositioned;
 
+  Widget _build() {
+    switch (projectItemType) {
+      case ProjectItemType.button:
+        return _buildButton();
+      default:
+        return Container(
+          color: Colors.grey,
+        );
+    }
+  }
+
+  Widget _buildButton() {
+    return BlocBuilder<ProjectCubit, ProjectState>(
+      cubit: cubit,
+      buildWhen: (previous, current) => previous.activate != current.activate,
+      builder: (context, state) {
+        if (state.activate) {
+          return Container(
+            color: Colors.red,
+          );
+        }
+        return Container(
+          color: Colors.blue,
+        );
+      },
+    );
+  }
+
   ReactPositioned toWidget() {
     if (reactPositioned == null)
       reactPositioned = ReactPositioned.fromModel(
-        child: Container(
-          color: Colors.grey,
-        ),
+        child: _build(),
         model: reactPositionedModel,
         onModelChangeEnd: (index, model) => reactPositionedModel = model,
       );
