@@ -28,6 +28,8 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
   final Map<int, ReactPositioned> _children = <int, ReactPositioned>{};
   Map<int, ReactPositioned> get children => _children;
 
+  bool _editable = true;
+
   ReactGridViewModel _model;
   ReactGridViewModel get model => _model;
 
@@ -195,7 +197,7 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
     }
 
     if (_changedIndexList.length > 0) {
-      emit(ReactPositionedUpdateState(_changedIndexList));
+      emit(ReactPositionedUpdateState(_editable, _changedIndexList));
     }
   }
 
@@ -227,7 +229,7 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
     }
 
     if (_changedIndexList.length > 0)
-      emit(ReactPositionedUpdateState(_changedIndexList));
+      emit(ReactPositionedUpdateState(_editable, _changedIndexList));
   }
 
   void initView() {
@@ -269,5 +271,11 @@ class ReactGridViewCubit extends Cubit<ReactGridViewState> {
           break;
       }
     }
+  }
+
+  void setEditable(bool editable) {
+    if (_editable == editable) return;
+    _editable = editable;
+    emit(ReactPositionedUpdateState(_editable, _sequentialIndexList));
   }
 }

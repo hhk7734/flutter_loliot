@@ -96,4 +96,8 @@ class ReactGridView extends StatelessWidget {
   void removeChild({@required int childIndex}) {
     _cubit.removeChild(childIndex);
   }
+
+  void setEditable({@required bool editable}) {
+    _cubit.setEditable(editable);
+  }
 }

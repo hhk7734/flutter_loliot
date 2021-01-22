@@ -20,8 +20,9 @@ class ReactGridViewUpdateState extends ReactGridViewState {
 }
 
 class ReactPositionedUpdateState extends ReactGridViewState {
-  const ReactPositionedUpdateState(this.indexList);
+  const ReactPositionedUpdateState(this.editable, this.indexList);
 
+  final bool editable;
   final List<int> indexList;
 
   @override

@@ -127,6 +127,9 @@ class _ReactPositionedState extends State<_ReactPositioned> {
       },
       builder: (context, state) {
         model = cubit.children[index].model;
+        if (state is ReactPositionedUpdateState) {
+          editable = state.editable;
+        }
 
         return Positioned(
           left: left,
