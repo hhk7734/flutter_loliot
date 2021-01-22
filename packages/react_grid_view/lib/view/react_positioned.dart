@@ -91,6 +91,8 @@ class _ReactPositioned extends StatefulWidget {
 }
 
 class _ReactPositionedState extends State<_ReactPositioned> {
+  bool editable = true;
+
   ReactPositionedModel model;
 
   ReactGridViewModel reactGridViewModel;
@@ -129,42 +131,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
         return Positioned(
           left: left,
           top: top,
-          child: model.movable
-              ? LongPressDraggable(
-                  child: Container(
-                    child: child,
-                    height: heightWithoutMargin,
-                    margin: margin,
-                    width: widthWithoutMargin,
-                  ),
-                  childWhenDragging: Container(
-                    color: Color.fromRGBO(0, 100, 0, 0.2),
-                    height: heightWithoutMargin,
-                    margin: margin,
-                    width: widthWithoutMargin,
-                  ),
-                  feedback: Material(
-                    color: Colors.transparent,
-                    child: Container(
-                      child: Transform.scale(
-                        child: child,
-                        scale: 1.05,
-                      ),
-                      height: heightWithoutMargin,
-                      margin: margin,
-                      width: widthWithoutMargin,
-                    ),
-                  ),
-                  onDragEnd: onDragEndCallback,
-                  onDragStarted: onDragStartedCallback,
-                  onDragUpdate: onDragUpdateCallback,
-                )
-              : Container(
-                  child: child,
-                  height: heightWithoutMargin,
-                  margin: margin,
-                  width: widthWithoutMargin,
-                ),
+          child: _build(),
         );
       },
       listenWhen: (previous, current) {
@@ -172,6 +139,69 @@ class _ReactPositionedState extends State<_ReactPositioned> {
       },
       listener: (context, state) {},
     );
+  }
+
+  Widget _build() {
+    int mode = 0;
+    if (editable) {
+      mode = resizable ? 1 : 0;
+      mode += model.movable ? 2 : 0;
+    }
+
+    switch (mode) {
+      case 1:
+        // resizable
+        return GestureDetector(
+          child: Container(
+            child: child,
+            height: heightWithoutMargin,
+            margin: margin,
+            width: widthWithoutMargin,
+          ),
+          onLongPressStart: (details) => _openResizeOverlay(),
+        );
+      case 2:
+      // movable
+      case 3:
+        // resizable + movable
+        return LongPressDraggable(
+          child: Container(
+            child: child,
+            height: heightWithoutMargin,
+            margin: margin,
+            width: widthWithoutMargin,
+          ),
+          childWhenDragging: Container(
+            color: Color.fromRGBO(0, 100, 0, 0.2),
+            height: heightWithoutMargin,
+            margin: margin,
+            width: widthWithoutMargin,
+          ),
+          feedback: Material(
+            color: Colors.transparent,
+            child: Container(
+              child: Transform.scale(
+                child: child,
+                scale: 1.05,
+              ),
+              height: heightWithoutMargin,
+              margin: margin,
+              width: widthWithoutMargin,
+            ),
+          ),
+          onDragEnd: onDragEndCallback,
+          onDragStarted: onDragStartedCallback,
+          onDragUpdate: onDragUpdateCallback,
+        );
+      default:
+        // uneditable
+        return Container(
+          child: child,
+          height: heightWithoutMargin,
+          margin: margin,
+          width: widthWithoutMargin,
+        );
+    }
   }
 
   // get
@@ -277,13 +307,13 @@ class _ReactPositionedState extends State<_ReactPositioned> {
   void onDragEndCallback(DraggableDetails details) {
     cubit.childMoveEnd();
 
-    _openResizeOverlay();
+    if (resizable) _openResizeOverlay();
   }
 
   // resize
 
   void _openResizeOverlay() {
-    if (resizable && overlay == null) {
+    if (overlay == null) {
       final RenderBox box = context.findRenderObject() as RenderBox;
       final Offset globalOffset = box.localToGlobal(Offset.zero);
       overlay = _ResizableOverlay(
@@ -308,7 +338,7 @@ class _ReactPositionedState extends State<_ReactPositioned> {
   }
 
   void resizeOnPanDownCloseCallback(DragDownDetails details) {
-    if (resizable && overlay != null) {
+    if (overlay != null) {
       cubit.childResizeEnd();
 
       overlay.close();
