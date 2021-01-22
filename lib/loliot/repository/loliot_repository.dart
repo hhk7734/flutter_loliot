@@ -16,7 +16,7 @@ class LoliotRepository {
 
   Map<int, String> projectNameMap = {};
 
-  Future<void> init() async {
+  Future<LoliotRepository> init() async {
     _prefs = await SharedPreferences.getInstance();
 
     String projectListModelString = _prefs.getString(kProjectListModelKey);
@@ -40,6 +40,8 @@ class LoliotRepository {
       value: (e) =>
           ProjectModel.fromString(_prefs.getString(kProjectKeyPrefix + e)),
     );
+
+    return this;
   }
 
   void addProject(ProjectModel projectModel) {

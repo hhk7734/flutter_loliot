@@ -6,16 +6,20 @@ import '../../authentication/authentication.dart';
 import '../../loliot/loliot.dart';
 
 class ProjectListPage extends StatelessWidget {
-  static Route route() {
-    return MaterialPageRoute<void>(builder: (_) => ProjectListPage());
+  ProjectListPage({this.loliotRepository});
+
+  static Route route(LoliotRepository loliotRepository) {
+    return MaterialPageRoute<void>(
+        builder: (_) => ProjectListPage(loliotRepository: loliotRepository));
   }
+
+  final LoliotRepository loliotRepository;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<ProjectListCubit>(
-      create: (context) =>
-          ProjectListCubit(loliotRepository: context.read<LoliotRepository>())
-            ..initView(context),
+      create: (context) => ProjectListCubit(loliotRepository: loliotRepository)
+        ..initView(context),
       child: _ProjectListPage(),
     );
   }

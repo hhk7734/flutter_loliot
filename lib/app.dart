@@ -54,7 +54,7 @@ class _AppViewState extends State<AppView> {
                           case AuthenticationStatus.authenticated:
                             loliotRepository.init().then(
                                 (value) => _navigator.pushAndRemoveUntil<void>(
-                                      ProjectListPage.route(),
+                                      ProjectListPage.route(value),
                                       (route) => false,
                                     ));
                             break;
