@@ -277,6 +277,12 @@ class _ReactPositionedState extends State<_ReactPositioned> {
   void onDragEndCallback(DraggableDetails details) {
     cubit.childMoveEnd();
 
+    _openResizeOverlay();
+  }
+
+  // resize
+
+  void _openResizeOverlay() {
     if (resizable && overlay == null) {
       final RenderBox box = context.findRenderObject() as RenderBox;
       final Offset globalOffset = box.localToGlobal(Offset.zero);
@@ -300,8 +306,6 @@ class _ReactPositionedState extends State<_ReactPositioned> {
       );
     }
   }
-
-  // resize
 
   void resizeOnPanDownCloseCallback(DragDownDetails details) {
     if (resizable && overlay != null) {
